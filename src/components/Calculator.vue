@@ -1,28 +1,30 @@
 <template>
   <main>
-    <h1>PERT Activity Calculator</h1>
-    <div>
-      <div>Activity Title</div>
+    <h1 class="drac-heading-2xl">PERT Activity Calculator</h1>
+    <div class="drac-d-grid drac-mb-sm">
+      <div class="col-span-5">Activity Title</div>
       <div>Optimistic Time</div>
       <div>Most Likely Time</div>
       <div>Pessimistic Time</div>
-      <div>Expected Time</div>
-      <div>Standard Deviation of Time</div>
+      <div class="drac-text-right">Expected Time</div>
+      <div class="col-span-2 drac-text-right">Standard Deviation of Time</div>
     </div>
     <div v-for="(activity, index) in activities"
          :key="activity.id"
+         class="drac-d-grid drac-mb-sm"
     >
       <activity v-model="activities[index]"
                 :canDelete="canDelete"
-                @removeActivity="removeActivity"/>
+                @removeActivity="removeActivity"
+      />
     </div>
-    <div class="row bg-background border-t-2 py-8 border-foreground sticky bottom-0">
-      <div>{{ total.optimistic }}</div>
-      <div>{{ total.mostLikely }}</div>
-      <div>{{ total.pessimistic }}</div>
-      <div>{{ total.expectedTime }}</div>
-      <div>
-        <button type="button" @click="add()">
+    <div class="drac-d-grid">
+      <div class="col-start-6 drac-px-sm border-l-4-invisible">{{ total.optimistic }}</div>
+      <div class="drac-px-sm border-l-4-invisible">{{ total.mostLikely }}</div>
+      <div class="drac-px-sm border-l-4-invisible">{{ total.pessimistic }}</div>
+      <div class="drac-text-right drac-text-semibold">{{ total.expectedTime }}</div>
+      <div class="col-start-11 col-span-2 drac-text-right">
+        <button type="button" @click="add()" class="drac-btn drac-bg-green">
           Add Activity
         </button>
       </div>
@@ -116,4 +118,32 @@ export default class Calculator extends Vue {
 </script>
 
 <style>
+.drac-d-grid {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.col-span-2 {
+  grid-column: span 2 / span 2;
+}
+
+.col-span-5 {
+  grid-column: span 5 / span 5;
+}
+
+.col-start-6 {
+  grid-column-start: 6;
+}
+
+.col-start-11 {
+  grid-column-start: 11;
+}
+
+.col-start-12 {
+  grid-column-start: 12;
+}
+
+.border-l-4-invisible {
+  border-left: 4px solid transparent;
+}
 </style>

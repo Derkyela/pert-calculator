@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import './assets/index.css';
+import 'dracula-ui/styles/dracula-ui.css';
 import { Options, Vue } from 'vue-class-component';
 import Calculator from './components/Calculator.vue';
 
