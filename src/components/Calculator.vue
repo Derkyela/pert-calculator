@@ -1,29 +1,28 @@
 <template>
-  <main class="container mx-auto py-16">
+  <main>
     <h1>PERT Activity Calculator</h1>
-    <div class="row bg-background border-b-2 py-8 border-foreground sticky top-0">
-      <div class="headline col-span-5">Activity Title</div>
-      <div class="headline">Optimistic Time</div>
-      <div class="headline">Most Likely Time</div>
-      <div class="headline">Pessimistic Time</div>
-      <div class="headline">Expected Time</div>
-      <div class="headline col-span-2">Standard Deviation of Time</div>
+    <div>
+      <div>Activity Title</div>
+      <div>Optimistic Time</div>
+      <div>Most Likely Time</div>
+      <div>Pessimistic Time</div>
+      <div>Expected Time</div>
+      <div>Standard Deviation of Time</div>
     </div>
     <div v-for="(activity, index) in activities"
          :key="activity.id"
-         class="row"
     >
       <activity v-model="activities[index]"
                 :canDelete="canDelete"
                 @removeActivity="removeActivity"/>
     </div>
     <div class="row bg-background border-t-2 py-8 border-foreground sticky bottom-0">
-      <div class="value col-start-6">{{ total.optimistic }}</div>
-      <div class="value">{{ total.mostLikely }}</div>
-      <div class="value">{{ total.pessimistic }}</div>
-      <div class="value">{{ total.expectedTime }}</div>
-      <div class="col-start-11 col-span-2 flex justify-end">
-        <button type="button" @click="add()" class="bg-green rounded-md text-background px-4 py-2">
+      <div>{{ total.optimistic }}</div>
+      <div>{{ total.mostLikely }}</div>
+      <div>{{ total.pessimistic }}</div>
+      <div>{{ total.expectedTime }}</div>
+      <div>
+        <button type="button" @click="add()">
           Add Activity
         </button>
       </div>
@@ -117,15 +116,4 @@ export default class Calculator extends Vue {
 </script>
 
 <style>
-.headline {
-  @apply font-semibold;
-}
-
-.row {
-  @apply grid grid-cols-12 gap-x-8 mb-8;
-}
-
-.value {
-  @apply bg-background px-4 py-2 border-2 rounded-md border-cyan;
-}
 </style>

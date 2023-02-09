@@ -3,32 +3,27 @@
          v-model="title"
          :placeholder="titlePlaceholder"
          aria-label="Activity Title"
-         class="value col-span-5"
   />
   <input type="number"
          min="0"
          step=".5"
          v-model="optimisticInput"
          aria-label="Optimistic time"
-         class="value"
   />
   <input type="number"
          step=".5"
          v-model="mostLikelyInput"
          aria-label="Most likely time"
-         class="value"
   />
   <input type="number"
          step=".5"
          v-model="pessimisticInput"
          aria-label="Pessimistic time"
-         class="value"
   />
-  <div class="value">{{ expectedTime }}</div>
-  <div class="value col-span-2">{{ standardDeviationOfTime }}</div>
+  <div>{{ expectedTime }}</div>
+  <div>{{ standardDeviationOfTime }}</div>
   <button type="button"
           @click="$emit('removeActivity', id)"
-          class="bg-red rounded-md text-background px-4 py-2 col-start-12"
           v-if="canDelete"
   >
     Remove

@@ -16,11 +16,4 @@ export default class App extends Vue {}
 </script>
 
 <style>
-body {
-  @apply text-foreground bg-background;
-}
-
-h1 {
-  @apply text-3xl font-bold mb-8;
-}
 </style>
