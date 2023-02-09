@@ -65,8 +65,6 @@ import round from '../utils';
   },
 })
 export default class Activity extends Vue {
-  id!: number;
-
   title = '';
 
   modelValue!: {
@@ -159,6 +157,10 @@ export default class Activity extends Vue {
 
   get titlePlaceholder(): string {
     return `Activity ${this.modelValue.id}`;
+  }
+
+  get id(): number {
+    return this.modelValue.id;
   }
 }
 </script>
