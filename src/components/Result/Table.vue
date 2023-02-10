@@ -20,6 +20,15 @@
       <td>{{ activity.standardDeviationOfTime }}</td>
     </tr>
     </tbody>
+    <tfoot>
+    <tr>
+      <th>Total</th>
+      <th class="drac-px-xs">{{ total.optimistic }}</th>
+      <th class="drac-px-xs">{{ total.mostLikely }}</th>
+      <th class="drac-px-xs">{{ total.pessimistic }}</th>
+      <th class="drac-px-xs">{{ total.expectedTime }}</th>
+    </tr>
+    </tfoot>
   </table>
 </template>
 
@@ -29,6 +38,10 @@ import { Options, Vue } from 'vue-class-component';
 @Options({
   props: {
     activities: {
+      type: Array,
+      required: true,
+    },
+    total: {
       type: Array,
       required: true,
     },

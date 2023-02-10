@@ -3,7 +3,9 @@
     <Component :is="settings.resultType"
                :template="settings.template"
                :list-type="settings.listType"
-               :activities="activities"/>
+               :activities="activities"
+               :total="total"
+    />
   </div>
   <p v-else>Please add an activity first.</p>
 </template>
@@ -16,6 +18,7 @@ import { ActivityInterface } from '@/interfaces/Activity';
 import { SettingsInterface } from '@/interfaces/Settings';
 import List from '@/components/Result/List.vue';
 import Table from '@/components/Result/Table.vue';
+import { Total } from '@/interfaces/Total';
 
 @Options({
   components: {
@@ -36,8 +39,12 @@ export default class Result extends Vue {
     return this.useSettingsStore.settings;
   }
 
-  get canShow(): boolean {
-    return this.useActivitiesStore.total.expectedTime > 0;
+  private get total(): Total {
+    return this.useActivitiesStore.total;
+  }
+
+  private get canShow(): boolean {
+    return this.total.expectedTime > 0;
   }
 }
 </script>
