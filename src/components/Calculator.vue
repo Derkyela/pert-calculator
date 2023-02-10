@@ -13,7 +13,12 @@
          :key="activity.id"
          class="drac-d-grid drac-mb-sm"
     >
-      <activity v-model="activities[index]"
+      <activity :activity-id="activities[index].id"
+                v-model:title="activities[index].title"
+                v-model:optimistic="activities[index].optimistic"
+                v-model:most-likely="activities[index].mostLikely"
+                v-model:pessimistic="activities[index].pessimistic"
+                v-model:expected-time="activities[index].expectedTime"
                 :canDelete="canDelete"
                 @removeActivity="removeActivity"
       />
@@ -33,89 +38,39 @@
 </template>
 
 <script lang="ts">
+import { ActivityInterface } from '@/interfaces/Activity';
+import { Total } from '@/interfaces/Total';
 import { Options, Vue } from 'vue-class-component';
+import useActivitiesStore from '@/stores/activities';
 import Activity from './Activity.vue';
-// eslint-disable-next-line import/no-unresolved,import/extensions
-import round from '../utils';
 
 @Options({
   components: {
     Activity,
   },
-  computed: {
-    canDelete: Boolean,
-    total: {
-      optimistic: Number,
-      mostLikely: Number,
-      pessimistic: Number,
-      expectedTime: Number,
-    },
-  },
 })
 
 export default class Calculator extends Vue {
-  activityId = 1;
+  private useActivitiesStore = useActivitiesStore();
 
-  activities: {
-    id: number,
-    title: string,
-    optimistic: number,
-    mostLikely: number,
-    pessimistic: number,
-    expectedTime: number,
-  }[] = [{
-    id: 1,
-    title: '',
-    optimistic: 0,
-    mostLikely: 0,
-    pessimistic: 0,
-    expectedTime: 0,
-  }];
+  private get activities(): ActivityInterface[] {
+    return this.useActivitiesStore.activities;
+  }
 
   private add(): void {
-    this.activityId += 1;
-    this.activities.push({
-      id: this.activityId,
-      title: '',
-      optimistic: 0,
-      mostLikely: 0,
-      pessimistic: 0,
-      expectedTime: 0,
-    });
+    this.useActivitiesStore.add();
   }
 
   private removeActivity(activityId: number): void {
-    if (this.activities.length <= 1) {
-      return;
-    }
-
-    const index = this.activities.findIndex((activity) => activity.id === activityId);
-    this.activities.splice(index, 1);
+    this.useActivitiesStore.remove(activityId);
   }
 
   private get canDelete(): boolean {
-    return this.activities.length > 1;
+    return this.useActivitiesStore.canDelete;
   }
 
-  private get total(): object {
-    let optimistic = 0;
-    let mostLikely = 0;
-    let pessimistic = 0;
-    let expectedTime = 0;
-
-    this.activities.forEach((activity) => {
-      optimistic += activity.optimistic;
-      mostLikely += activity.mostLikely;
-      pessimistic += activity.pessimistic;
-      expectedTime += activity.expectedTime;
-    });
-
-    return {
-      optimistic: round(optimistic),
-      mostLikely: round(mostLikely),
-      pessimistic: round(pessimistic),
-      expectedTime: round(expectedTime),
-    };
+  private get total(): Total {
+    return this.useActivitiesStore.total;
   }
 }
 </script>
@@ -140,10 +95,6 @@ export default class Calculator extends Vue {
 
 .col-start-11 {
   grid-column-start: 11;
-}
-
-.col-start-12 {
-  grid-column-start: 12;
 }
 
 .border-l-4-invisible {

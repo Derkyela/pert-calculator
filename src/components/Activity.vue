@@ -1,26 +1,36 @@
 <template>
   <input type="text"
-         v-model="titleInput"
+         :value="title"
          :placeholder="titlePlaceholder"
+         @input="$emit('update:title', $event.target.value);"
+         @focus="$event.target.select()"
          aria-label="Activity Title"
          class="col-span-5 drac-input drac-input-white drac-text-white"
   />
-  <input type="number"
-         min="0"
-         step=".5"
-         v-model="optimisticInput"
+  <input :value="optimistic"
+         @input="$emit('update:optimistic', toNumber($event.target.value));
+          $nextTick(() => calcExpectedTime())"
+         @focus="$event.target.select()"
+         @keydown.up="increment($event, 'update:optimistic')"
+         @keydown.down="decrement($event, 'update:optimistic')"
          aria-label="Optimistic time"
          class="drac-input drac-input-white drac-text-white"
   />
-  <input type="number"
-         step=".5"
-         v-model="mostLikelyInput"
+  <input :value="mostLikely"
+         @input="$emit('update:mostLikely', toNumber($event.target.value));
+          $nextTick(() => calcExpectedTime())"
+         @focus="$event.target.select()"
+         @keydown.up="increment($event, 'update:mostLikely')"
+         @keydown.down="decrement($event, 'update:mostLikely')"
          aria-label="Most likely time"
          class="drac-input drac-input-white drac-text-white"
   />
-  <input type="number"
-         step=".5"
-         v-model="pessimisticInput"
+  <input :value="pessimistic"
+         @input="$emit('update:pessimistic', toNumber($event.target.value));
+          $nextTick(() => calcExpectedTime())"
+         @focus="$event.target.select()"
+         @keydown.up="increment($event, 'update:pessimistic')"
+         @keydown.down="decrement($event, 'update:pessimistic')"
          aria-label="Pessimistic time"
          class="drac-input drac-input-white drac-text-white"
   />
@@ -31,7 +41,7 @@
     {{ standardDeviationOfTime }}
   </div>
   <button type="button"
-          @click="$emit('removeActivity', id)"
+          @click="$emit('removeActivity', activityId)"
           v-if="canDelete"
           class="col-start-12 drac-btn drac-bg-red"
   >
@@ -42,147 +52,92 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 // eslint-disable-next-line import/no-unresolved,import/extensions
-import round from '../utils';
+import { round, toNumber } from '../utils';
 
 @Options({
+  methods: { toNumber },
   emits: [
     'removeActivity',
+    'update:title',
+    'update:optimistic',
+    'update:mostLikely',
+    'update:pessimistic',
+    'update:expectedTime',
   ],
   props: {
+    activityId: Number,
+    title: String,
+    optimistic: Number,
+    mostLikely: Number,
+    pessimistic: Number,
+    expectedTime: Number,
     canDelete: Boolean,
-    modelValue: {
-      id: Number,
-      title: String,
-      optimistic: Number,
-      mostLikely: Number,
-      pessimistic: Number,
-      expectedTime: Number,
-    },
   },
   computed: {
-    expectedTime: Number,
     standardDeviationOfTime: Number,
     titlePlaceholder: String,
   },
 })
 export default class Activity extends Vue {
-  modelValue!: {
-    id: number,
-    title: string,
-    optimistic: number,
-    mostLikely: number,
-    pessimistic: number,
-    expectedTime: number,
-  };
+  private step = 0.5;
 
   canDelete!: boolean;
 
-  private get titleInput(): string {
-    return this.modelValue.title;
-  }
+  activityId!: number;
 
-  private set titleInput(val: string) {
-    this.$emit('update:modelValue', {
-      id: this.modelValue.id,
-      title: val,
-      optimistic: this.modelValue.optimistic,
-      mostLikely: this.modelValue.mostLikely,
-      pessimistic: this.modelValue.pessimistic,
-      expectedTime: Activity.calcExpectedTime(
-        this.modelValue.optimistic,
-        this.modelValue.mostLikely,
-        this.modelValue.pessimistic,
-      ),
-    });
-  }
+  optimistic!: number;
 
-  private get optimisticInput(): number {
-    return this.modelValue.optimistic;
-  }
+  mostLikely!: number;
 
-  private set optimisticInput(val: number) {
-    this.$emit('update:modelValue', {
-      id: this.modelValue.id,
-      title: this.modelValue.title,
-      optimistic: val,
-      mostLikely: this.modelValue.mostLikely,
-      pessimistic: this.modelValue.pessimistic,
-      expectedTime: Activity.calcExpectedTime(
-        val,
-        this.modelValue.mostLikely,
-        this.modelValue.pessimistic,
-      ),
-    });
-  }
+  pessimistic!: number;
 
-  private get mostLikelyInput(): number {
-    return this.modelValue.mostLikely;
-  }
+  private calcExpectedTime(): void {
+    if (this.mostLikely === 0 && this.pessimistic === 0) {
+      return;
+    }
 
-  private set mostLikelyInput(val: number) {
-    this.$emit('update:modelValue', {
-      id: this.modelValue.id,
-      title: this.modelValue.title,
-      optimistic: this.modelValue.optimistic,
-      mostLikely: val,
-      pessimistic: this.modelValue.pessimistic,
-      expectedTime: Activity.calcExpectedTime(
-        this.modelValue.optimistic,
-        val,
-        this.modelValue.pessimistic,
-      ),
-    });
-  }
+    const expectedTime = (this.optimistic + 4 * this.mostLikely + this.pessimistic) / 6;
 
-  private get pessimisticInput(): number {
-    return this.modelValue.pessimistic;
-  }
+    console.debug(this.optimistic);
+    console.debug(this.mostLikely);
+    console.debug(this.pessimistic);
+    console.debug(round(expectedTime));
 
-  private set pessimisticInput(val: number) {
-    this.$emit('update:modelValue', {
-      id: this.modelValue.id,
-      title: this.modelValue.title,
-      optimistic: this.modelValue.optimistic,
-      mostLikely: this.modelValue.mostLikely,
-      pessimistic: val,
-      expectedTime: Activity.calcExpectedTime(
-        this.modelValue.optimistic,
-        this.modelValue.mostLikely,
-        val,
-      ),
-    });
-  }
-
-  private get expectedTime(): number {
-    return Activity.calcExpectedTime(
-      this.optimisticInput,
-      this.mostLikelyInput,
-      this.pessimisticInput,
-    );
-  }
-
-  private static calcExpectedTime(
-    optimistic: number,
-    mostLikely: number,
-    pessimistic: number,
-  ): number {
-    const expectedTime = (optimistic + 4 * mostLikely + pessimistic) / 6;
-
-    return round(expectedTime);
+    this.$emit('update:expectedTime', round(expectedTime));
   }
 
   get standardDeviationOfTime(): number {
-    const standardDeviationOfTime = (this.modelValue.pessimistic - this.modelValue.optimistic) / 6;
+    if (this.pessimistic === 0) {
+      return 0;
+    }
+
+    const standardDeviationOfTime = (this.pessimistic - this.optimistic) / 6;
 
     return round(standardDeviationOfTime);
   }
 
   get titlePlaceholder(): string {
-    return `Activity ${this.modelValue.id}`;
+    return `Activity ${this.activityId}`;
   }
 
-  get id(): number {
-    return this.modelValue.id;
+  private increment(event: Event, emitName: string): void {
+    const element = event.target as HTMLInputElement;
+
+    this.$emit(emitName, toNumber(element.value) + this.step);
+    this.$nextTick(() => this.calcExpectedTime());
+  }
+
+  private decrement(event: Event, emitName: string): void {
+    const element = event.target as HTMLInputElement;
+
+    this.$emit(emitName, toNumber(element.value) - this.step);
+    this.$nextTick(() => this.calcExpectedTime());
   }
 }
 </script>
+
+<style>
+.col-start-12 {
+  grid-column-start: 12;
+}
+</style>
