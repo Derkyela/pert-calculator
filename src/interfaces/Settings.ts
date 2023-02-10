@@ -4,8 +4,8 @@ export enum ResultType {
 }
 
 export enum ListType {
-  Unordered = 'ul',
-  Ordered = 'ol',
+  Unordered = 'Unordered',
+  Ordered = 'Ordered',
 }
 
 export interface SettingsInterface {
