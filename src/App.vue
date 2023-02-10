@@ -12,23 +12,27 @@
       >{{ tab }}</a>
     </li>
   </ul>
-  <Component :is="currentTab" />
+  <main class="drac-py-sm">
+    <Component :is="currentTab" />
+  </main>
 </template>
 
 <script lang="ts">
 import 'dracula-ui/styles/dracula-ui.css';
 import { Options, Vue } from 'vue-class-component';
 import Result from '@/components/Result.vue';
+import Settings from '@/components/Settings.vue';
 import Calculator from './components/Calculator.vue';
 
 @Options({
   components: {
     Calculator,
     Result,
+    Settings,
   },
 })
 export default class App extends Vue {
-  tabs = ['Calculator', 'Result'];
+  tabs = ['Calculator', 'Result', 'Settings'];
 
   currentTab = 'Calculator';
 }

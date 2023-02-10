@@ -1,40 +1,38 @@
 <template>
-  <main>
-    <div class="drac-d-grid drac-my-sm">
-      <div class="col-span-5">Activity Title</div>
-      <div>Optimistic Time</div>
-      <div>Most Likely Time</div>
-      <div>Pessimistic Time</div>
-      <div class="drac-text-right">Expected Time</div>
-      <div class="col-span-2 drac-text-right">Standard Deviation of Time</div>
+  <div class="drac-d-grid drac-my-sm">
+    <div class="col-span-5">Activity Title</div>
+    <div>Optimistic Time</div>
+    <div>Most Likely Time</div>
+    <div>Pessimistic Time</div>
+    <div class="drac-text-right">Expected Time</div>
+    <div class="col-span-2 drac-text-right">Standard Deviation of Time</div>
+  </div>
+  <div v-for="activity in activities"
+       :key="activity.id"
+       class="drac-d-grid drac-mb-sm"
+  >
+    <activity :activity-id="activity.id"
+              v-model:title="activity.title"
+              v-model:optimistic="activity.optimistic"
+              v-model:most-likely="activity.mostLikely"
+              v-model:pessimistic="activity.pessimistic"
+              v-model:expected-time="activity.expectedTime"
+              v-model:standard-deviation-of-time="activity.standardDeviationOfTime"
+              :canDelete="canDelete"
+              @removeActivity="removeActivity"
+    />
+  </div>
+  <div class="drac-d-grid">
+    <div class="col-start-6 drac-px-sm border-l-4-invisible">{{ total.optimistic }}</div>
+    <div class="drac-px-sm border-l-4-invisible">{{ total.mostLikely }}</div>
+    <div class="drac-px-sm border-l-4-invisible">{{ total.pessimistic }}</div>
+    <div class="drac-text-right drac-text-semibold">{{ total.expectedTime }}</div>
+    <div class="col-start-11 col-span-2 drac-text-right">
+      <button type="button" @click="add()" class="drac-btn drac-bg-green">
+        Add Activity
+      </button>
     </div>
-    <div v-for="activity in activities"
-         :key="activity.id"
-         class="drac-d-grid drac-mb-sm"
-    >
-      <activity :activity-id="activity.id"
-                v-model:title="activity.title"
-                v-model:optimistic="activity.optimistic"
-                v-model:most-likely="activity.mostLikely"
-                v-model:pessimistic="activity.pessimistic"
-                v-model:expected-time="activity.expectedTime"
-                v-model:standard-deviation-of-time="activity.standardDeviationOfTime"
-                :canDelete="canDelete"
-                @removeActivity="removeActivity"
-      />
-    </div>
-    <div class="drac-d-grid">
-      <div class="col-start-6 drac-px-sm border-l-4-invisible">{{ total.optimistic }}</div>
-      <div class="drac-px-sm border-l-4-invisible">{{ total.mostLikely }}</div>
-      <div class="drac-px-sm border-l-4-invisible">{{ total.pessimistic }}</div>
-      <div class="drac-text-right drac-text-semibold">{{ total.expectedTime }}</div>
-      <div class="col-start-11 col-span-2 drac-text-right">
-        <button type="button" @click="add()" class="drac-btn drac-bg-green">
-          Add Activity
-        </button>
-      </div>
-    </div>
-  </main>
+  </div>
 </template>
 
 <script lang="ts">
