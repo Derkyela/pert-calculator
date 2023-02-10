@@ -27,9 +27,6 @@ import { ActivityInterface } from '@/interfaces/Activity';
       required: true,
     },
   },
-  computed: {
-    titlePlaceholder: String,
-  },
 })
 export default class Result extends Vue {
   private listType!: ListType;
