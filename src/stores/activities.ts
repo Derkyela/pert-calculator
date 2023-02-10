@@ -18,6 +18,7 @@ export default defineStore('activities', {
       mostLikely: 0,
       pessimistic: 0,
       expectedTime: 0,
+      standardDeviationOfTime: 0,
     }],
   }),
   getters: {
@@ -55,6 +56,7 @@ export default defineStore('activities', {
         mostLikely: 0,
         pessimistic: 0,
         expectedTime: 0,
+        standardDeviationOfTime: 0,
       });
     },
     remove(activityId: number): void {

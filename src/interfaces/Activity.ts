@@ -5,4 +5,5 @@ export interface ActivityInterface {
   mostLikely: number,
   pessimistic: number,
   expectedTime: number,
+  standardDeviationOfTime: number,
 }

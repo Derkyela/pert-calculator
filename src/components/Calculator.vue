@@ -9,16 +9,17 @@
       <div class="drac-text-right">Expected Time</div>
       <div class="col-span-2 drac-text-right">Standard Deviation of Time</div>
     </div>
-    <div v-for="(activity, index) in activities"
+    <div v-for="activity in activities"
          :key="activity.id"
          class="drac-d-grid drac-mb-sm"
     >
-      <activity :activity-id="activities[index].id"
-                v-model:title="activities[index].title"
-                v-model:optimistic="activities[index].optimistic"
-                v-model:most-likely="activities[index].mostLikely"
-                v-model:pessimistic="activities[index].pessimistic"
-                v-model:expected-time="activities[index].expectedTime"
+      <activity :activity-id="activity.id"
+                v-model:title="activity.title"
+                v-model:optimistic="activity.optimistic"
+                v-model:most-likely="activity.mostLikely"
+                v-model:pessimistic="activity.pessimistic"
+                v-model:expected-time="activity.expectedTime"
+                v-model:standard-deviation-of-time="activity.standardDeviationOfTime"
                 :canDelete="canDelete"
                 @removeActivity="removeActivity"
       />

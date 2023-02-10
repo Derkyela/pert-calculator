@@ -9,7 +9,7 @@
   />
   <input :value="optimistic"
          @input="$emit('update:optimistic', toNumber($event.target.value));
-          $nextTick(() => calcExpectedTime())"
+          $nextTick(() => updateCalculatedValues())"
          @focus="$event.target.select()"
          @keydown.up="increment($event, 'update:optimistic')"
          @keydown.down="decrement($event, 'update:optimistic')"
@@ -18,7 +18,7 @@
   />
   <input :value="mostLikely"
          @input="$emit('update:mostLikely', toNumber($event.target.value));
-          $nextTick(() => calcExpectedTime())"
+          $nextTick(() => updateCalculatedValues())"
          @focus="$event.target.select()"
          @keydown.up="increment($event, 'update:mostLikely')"
          @keydown.down="decrement($event, 'update:mostLikely')"
@@ -27,7 +27,7 @@
   />
   <input :value="pessimistic"
          @input="$emit('update:pessimistic', toNumber($event.target.value));
-          $nextTick(() => calcExpectedTime())"
+          $nextTick(() => updateCalculatedValues())"
          @focus="$event.target.select()"
          @keydown.up="increment($event, 'update:pessimistic')"
          @keydown.down="decrement($event, 'update:pessimistic')"
@@ -63,6 +63,7 @@ import { round, toNumber } from '../utils';
     'update:mostLikely',
     'update:pessimistic',
     'update:expectedTime',
+    'update:standardDeviationOfTime',
   ],
   props: {
     activityId: Number,
@@ -71,10 +72,10 @@ import { round, toNumber } from '../utils';
     mostLikely: Number,
     pessimistic: Number,
     expectedTime: Number,
+    standardDeviationOfTime: Number,
     canDelete: Boolean,
   },
   computed: {
-    standardDeviationOfTime: Number,
     titlePlaceholder: String,
   },
 })
@@ -97,23 +98,21 @@ export default class Activity extends Vue {
     }
 
     const expectedTime = (this.optimistic + 4 * this.mostLikely + this.pessimistic) / 6;
-
-    console.debug(this.optimistic);
-    console.debug(this.mostLikely);
-    console.debug(this.pessimistic);
-    console.debug(round(expectedTime));
-
     this.$emit('update:expectedTime', round(expectedTime));
   }
 
-  get standardDeviationOfTime(): number {
+  private updateCalculatedValues(): void {
+    this.calcExpectedTime();
+    this.calcStandardDeviationOfTime();
+  }
+
+  private calcStandardDeviationOfTime(): void {
     if (this.pessimistic === 0) {
-      return 0;
+      return;
     }
 
     const standardDeviationOfTime = (this.pessimistic - this.optimistic) / 6;
-
-    return round(standardDeviationOfTime);
+    this.$emit('update:standardDeviationOfTime', round(standardDeviationOfTime));
   }
 
   get titlePlaceholder(): string {
