@@ -1,7 +1,8 @@
 <template>
-  <ul class="drac-list">
+  <ul class="drac-list" v-if="canShow">
     <li v-for="activity in activities" :key="activity.id">{{ activityString(activity) }}</li>
   </ul>
+  <p v-else>Please add some activities first.</p>
 </template>
 
 <script lang="ts">
@@ -26,6 +27,10 @@ export default class Result extends Vue {
     });
 
     return activityString;
+  }
+
+  get canShow(): boolean {
+    return this.useActivitiesStore.total.expectedTime > 0;
   }
 }
 </script>
