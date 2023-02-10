@@ -1,6 +1,5 @@
 <template>
   <main>
-    <h1 class="drac-heading-2xl">PERT Activity Calculator</h1>
     <div class="drac-d-grid drac-my-sm">
       <div class="col-span-5">Activity Title</div>
       <div>Optimistic Time</div>
