@@ -1,19 +1,20 @@
 <template>
   <ul class="drac-list drac-list-unordered drac-my-sm" v-if="showUnorderedList">
-    <li v-for="activity in activities" :key="activity.id">{{ activityString(activity) }}</li>
+    <li v-for="activity in activities" :key="activity.id" v-html="activityString(activity)"></li>
     <li>{{ totalString }}</li>
   </ul>
   <ol class="drac-list drac-list-ordered drac-my-sm" v-if="showOrderedList">
-    <li v-for="activity in activities" :key="activity.id">{{ activityString(activity) }}</li>
+    <li v-for="activity in activities" :key="activity.id" v-html="activityString(activity)"></li>
     <li>{{ totalString }}</li>
   </ol>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { ListType } from '@/interfaces/Settings';
+import { ListType, SettingsInterface } from '@/interfaces/Settings';
 import { ActivityInterface } from '@/interfaces/Activity';
 import { Total } from '@/interfaces/Total';
+import useSettingsStore from '@/stores/settings';
 
 @Options({
   props: {
@@ -42,6 +43,12 @@ export default class Result extends Vue {
 
   private total!: Total;
 
+  private useSettingsStore = useSettingsStore();
+
+  private get settings(): SettingsInterface {
+    return this.useSettingsStore.settings;
+  }
+
   private get showUnorderedList(): boolean {
     return this.listType === ListType.Unordered;
   }
@@ -54,6 +61,18 @@ export default class Result extends Vue {
     let activityString = this.template;
 
     Object.getOwnPropertyNames(activity).forEach((prop) => {
+      if (
+        prop === 'standardDeviationOfTime'
+        && this.settings.markHighStandardDeviationOfTime
+        && activity[prop as keyof ActivityInterface]
+          > this.settings.standardDeviationOfTimeThreshold
+      ) {
+        activityString = activityString.replaceAll(
+          `#${prop}#`,
+          `<span class="drac-text-red">#${prop}#</span>`,
+        );
+      }
+
       activityString = activityString.replaceAll(`#${prop}#`, activity[prop as keyof ActivityInterface].toString());
     });
 

@@ -12,12 +12,28 @@
     </thead>
     <tbody>
     <tr v-for="activity in activities" :key="activity.id">
-      <td>{{ activity.title }}</td>
-      <td>{{ activity.optimistic }}</td>
+      <td :class="[{
+        'drac-text-white': !markHighStandardDeviationOfTime(activity.standardDeviationOfTime),
+        'drac-text-red': markHighStandardDeviationOfTime(activity.standardDeviationOfTime)
+      }]"
+      >{{ activity.title }}</td>
+      <td :class="[{
+        'drac-text-white': !markHighStandardDeviationOfTime(activity.standardDeviationOfTime),
+        'drac-text-red': markHighStandardDeviationOfTime(activity.standardDeviationOfTime)
+      }]"
+      >{{ activity.optimistic }}</td>
       <td>{{ activity.mostLikely }}</td>
-      <td>{{ activity.pessimistic }}</td>
+      <td :class="[{
+        'drac-text-white': !markHighStandardDeviationOfTime(activity.standardDeviationOfTime),
+        'drac-text-red': markHighStandardDeviationOfTime(activity.standardDeviationOfTime)
+      }]"
+      >{{ activity.pessimistic }}</td>
       <td>{{ activity.expectedTime }}</td>
-      <td>{{ activity.standardDeviationOfTime }}</td>
+      <td :class="[{
+        'drac-text-white': !markHighStandardDeviationOfTime(activity.standardDeviationOfTime),
+        'drac-text-red': markHighStandardDeviationOfTime(activity.standardDeviationOfTime)
+      }]"
+      >{{ activity.standardDeviationOfTime }}</td>
     </tr>
     </tbody>
     <tfoot>
@@ -34,6 +50,8 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import { SettingsInterface } from '@/interfaces/Settings';
+import useSettingsStore from '@/stores/settings';
 
 @Options({
   props: {
@@ -48,5 +66,18 @@ import { Options, Vue } from 'vue-class-component';
   },
 })
 export default class Result extends Vue {
+  private useSettingsStore = useSettingsStore();
+
+  private get settings(): SettingsInterface {
+    return this.useSettingsStore.settings;
+  }
+
+  private markHighStandardDeviationOfTime(standardDeviationOfTime: number): boolean {
+    if (!this.settings.markHighStandardDeviationOfTime) {
+      return false;
+    }
+
+    return standardDeviationOfTime > this.settings.standardDeviationOfTimeThreshold;
+  }
 }
 </script>

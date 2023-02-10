@@ -12,4 +12,6 @@ export interface SettingsInterface {
   resultType: ResultType,
   listType: ListType,
   template: string,
+  markHighStandardDeviationOfTime: boolean,
+  standardDeviationOfTimeThreshold: number,
 }

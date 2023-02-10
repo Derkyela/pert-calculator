@@ -11,6 +11,8 @@ export default defineStore('settings', {
       resultType: ResultType.List,
       listType: ListType.Unordered,
       template: '#title#: #optimistic# - #mostLikely# - #pessimistic# -> #expectedTime#',
+      markHighStandardDeviationOfTime: false,
+      standardDeviationOfTimeThreshold: 1,
     },
   }),
 });

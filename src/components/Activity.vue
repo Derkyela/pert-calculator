@@ -5,7 +5,11 @@
          @input="$emit('update:title', $event.target.value);"
          @focus="$event.target.select()"
          aria-label="Activity Title"
-         class="col-span-5 drac-input drac-input-white drac-text-white"
+         class="col-span-5 drac-input drac-input-white"
+         :class="[{
+           'drac-text-white': !markHighStandardDeviationOfTime,
+           'drac-text-red': markHighStandardDeviationOfTime
+       }]"
   />
   <input :value="optimistic"
          @input="$emit('update:optimistic', toNumber($event.target.value));
@@ -14,7 +18,11 @@
          @keydown.up="increment($event, 'update:optimistic')"
          @keydown.down="decrement($event, 'update:optimistic')"
          aria-label="Optimistic time"
-         class="drac-input drac-input-white drac-text-white"
+         class="drac-input drac-input-white"
+         :class="[{
+           'drac-text-white': !markHighStandardDeviationOfTime,
+           'drac-text-red': markHighStandardDeviationOfTime
+       }]"
   />
   <input :value="mostLikely"
          @input="$emit('update:mostLikely', toNumber($event.target.value));
@@ -32,12 +40,21 @@
          @keydown.up="increment($event, 'update:pessimistic')"
          @keydown.down="decrement($event, 'update:pessimistic')"
          aria-label="Pessimistic time"
-         class="drac-input drac-input-white drac-text-white"
+         class="drac-input drac-input-white"
+         :class="[{
+           'drac-text-white': !markHighStandardDeviationOfTime,
+           'drac-text-red': markHighStandardDeviationOfTime
+       }]"
   />
   <div class="drac-py-xs drac-text-white drac-text-semibold drac-text-right">
     {{ expectedTime }}
   </div>
-  <div class="col-span-2 drac-py-xs drac-text-white drac-text-right">
+  <div class="col-span-2 drac-py-xs drac-text-right"
+       :class="[{
+         'drac-text-white': !markHighStandardDeviationOfTime,
+         'drac-text-red': markHighStandardDeviationOfTime
+       }]"
+  >
     {{ standardDeviationOfTime }}
   </div>
   <button type="button"
@@ -52,6 +69,8 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 // eslint-disable-next-line import/no-unresolved,import/extensions
+import useSettingsStore from '@/stores/settings';
+import { SettingsInterface } from '@/interfaces/Settings';
 import { round, toNumber } from '../utils';
 
 @Options({
@@ -92,6 +111,14 @@ export default class Activity extends Vue {
 
   pessimistic!: number;
 
+  standardDeviationOfTime!: number;
+
+  private useSettingsStore = useSettingsStore();
+
+  private get settings(): SettingsInterface {
+    return this.useSettingsStore.settings;
+  }
+
   private calcExpectedTime(): void {
     if (this.mostLikely === 0 && this.pessimistic === 0) {
       return;
@@ -131,6 +158,14 @@ export default class Activity extends Vue {
 
     this.$emit(emitName, toNumber(element.value) - this.step);
     this.$nextTick(() => this.calcExpectedTime());
+  }
+
+  private get markHighStandardDeviationOfTime(): boolean {
+    if (!this.settings.markHighStandardDeviationOfTime) {
+      return false;
+    }
+
+    return this.standardDeviationOfTime > this.settings.standardDeviationOfTimeThreshold;
   }
 }
 </script>

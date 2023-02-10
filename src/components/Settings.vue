@@ -53,15 +53,49 @@
         Available template variable: {{ availableTemplateVariables }}
       </div>
     </div>
+    <label for="markHighStandardDeviationOfTime"
+           class="drac-d-flex items-center gap-sm"
+    >
+      <span>Mark Hight Standard Deviation of Time</span>
+      <input id="markHighStandardDeviationOfTime"
+             type="checkbox"
+             v-model="settings.markHighStandardDeviationOfTime"
+             class="drac-switch drac-checkbox"
+             :class="[{
+               'drac-switch-green': settings.markHighStandardDeviationOfTime,
+               'drac-switch-red': !settings.markHighStandardDeviationOfTime
+             }]"
+      />
+    </label>
+    <label for="standardDeviationOfTimeThreshold"
+           class="drac-d-flex items-center gap-sm"
+           v-if="settings.markHighStandardDeviationOfTime"
+    >
+      <span>Standard Deviation of Time Threshold</span>
+      <div class="drac-w-xxs">
+        <input id="standardDeviationOfTimeThreshold"
+               :value="settings.standardDeviationOfTimeThreshold"
+               @input="settings.standardDeviationOfTimeThreshold = toNumber($event.target.value)"
+               @focus="$event.target.select()"
+               class="drac-input drac-input-white drac-text-white"
+        />
+      </div>
+    </label>
   </div>
 </template>
 
 <script lang="ts">
-import { Vue } from 'vue-class-component';
+import { Options, Vue } from 'vue-class-component';
 import useSettingsStore from '@/stores/settings';
 import { ListType, ResultType, SettingsInterface } from '@/interfaces/Settings';
-import { ActivityInterface } from '@/interfaces/Activity';
+import { toNumber } from '@/utils';
 
+@Options({
+  methods: { toNumber },
+  emits: [
+    'set:standardDeviationOfTimeThreshold',
+  ],
+})
 export default class Settings extends Vue {
   private useSettingsStore = useSettingsStore();
 
