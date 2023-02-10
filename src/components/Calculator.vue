@@ -58,12 +58,14 @@ export default class Calculator extends Vue {
 
   activities: {
     id: number,
+    title: string,
     optimistic: number,
     mostLikely: number,
     pessimistic: number,
     expectedTime: number,
   }[] = [{
     id: 1,
+    title: '',
     optimistic: 0,
     mostLikely: 0,
     pessimistic: 0,
@@ -74,6 +76,7 @@ export default class Calculator extends Vue {
     this.activityId += 1;
     this.activities.push({
       id: this.activityId,
+      title: '',
       optimistic: 0,
       mostLikely: 0,
       pessimistic: 0,

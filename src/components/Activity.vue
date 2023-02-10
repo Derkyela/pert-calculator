@@ -1,6 +1,6 @@
 <template>
   <input type="text"
-         v-model="title"
+         v-model="titleInput"
          :placeholder="titlePlaceholder"
          aria-label="Activity Title"
          class="col-span-5 drac-input drac-input-white drac-text-white"
@@ -52,6 +52,7 @@ import round from '../utils';
     canDelete: Boolean,
     modelValue: {
       id: Number,
+      title: String,
       optimistic: Number,
       mostLikely: Number,
       pessimistic: Number,
@@ -65,10 +66,9 @@ import round from '../utils';
   },
 })
 export default class Activity extends Vue {
-  title = '';
-
   modelValue!: {
     id: number,
+    title: string,
     optimistic: number,
     mostLikely: number,
     pessimistic: number,
@@ -77,6 +77,25 @@ export default class Activity extends Vue {
 
   canDelete!: boolean;
 
+  private get titleInput(): string {
+    return this.modelValue.title;
+  }
+
+  private set titleInput(val: string) {
+    this.$emit('update:modelValue', {
+      id: this.modelValue.id,
+      title: val,
+      optimistic: this.modelValue.optimistic,
+      mostLikely: this.modelValue.mostLikely,
+      pessimistic: this.modelValue.pessimistic,
+      expectedTime: Activity.calcExpectedTime(
+        this.modelValue.optimistic,
+        this.modelValue.mostLikely,
+        this.modelValue.pessimistic,
+      ),
+    });
+  }
+
   private get optimisticInput(): number {
     return this.modelValue.optimistic;
   }
@@ -84,6 +103,7 @@ export default class Activity extends Vue {
   private set optimisticInput(val: number) {
     this.$emit('update:modelValue', {
       id: this.modelValue.id,
+      title: this.modelValue.title,
       optimistic: val,
       mostLikely: this.modelValue.mostLikely,
       pessimistic: this.modelValue.pessimistic,
@@ -102,6 +122,7 @@ export default class Activity extends Vue {
   private set mostLikelyInput(val: number) {
     this.$emit('update:modelValue', {
       id: this.modelValue.id,
+      title: this.modelValue.title,
       optimistic: this.modelValue.optimistic,
       mostLikely: val,
       pessimistic: this.modelValue.pessimistic,
@@ -120,6 +141,7 @@ export default class Activity extends Vue {
   private set pessimisticInput(val: number) {
     this.$emit('update:modelValue', {
       id: this.modelValue.id,
+      title: this.modelValue.title,
       optimistic: this.modelValue.optimistic,
       mostLikely: this.modelValue.mostLikely,
       pessimistic: val,
