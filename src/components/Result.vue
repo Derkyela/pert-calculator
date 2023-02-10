@@ -15,10 +15,12 @@ import useSettingsStore from '@/stores/settings';
 import { ActivityInterface } from '@/interfaces/Activity';
 import { SettingsInterface } from '@/interfaces/Settings';
 import List from '@/components/Result/List.vue';
+import Table from '@/components/Result/Table.vue';
 
 @Options({
   components: {
     List,
+    Table,
   },
 })
 export default class Result extends Vue {
