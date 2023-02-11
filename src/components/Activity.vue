@@ -60,7 +60,7 @@
   <button type="button"
           @click="$emit('removeActivity', activityId)"
           v-if="canDelete"
-          class="col-start-12 drac-btn drac-bg-red"
+          class="col-start-12 drac-btn drac-bg-red drac-text-black"
   >
     Remove
   </button>
@@ -169,9 +169,3 @@ export default class Activity extends Vue {
   }
 }
 </script>
-
-<style>
-.col-start-12 {
-  grid-column-start: 12;
-}
-</style>

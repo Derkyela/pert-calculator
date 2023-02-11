@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import 'dracula-ui/styles/dracula-ui.css';
+import './assets/index.css';
 import { Options, Vue } from 'vue-class-component';
 import Result from '@/components/Result.vue';
 import Settings from '@/components/Settings.vue';
@@ -50,6 +50,6 @@ export default class App extends Vue {
 
 <style>
 .drac-tab-link {
-  cursor: pointer;
+  @apply cursor-pointer;
 }
 </style>

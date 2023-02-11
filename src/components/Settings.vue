@@ -1,6 +1,6 @@
 <template>
-  <div class="drac-box drac-d-flex flex-col gap-sm drac-my-sm">
-    <label for="resultType" class="drac-d-flex items-center gap-sm">
+  <div class="drac-box flex flex-col gap-4 drac-my-sm">
+    <label for="resultType" class="flex items-center gap-4">
       <span>Result Type</span>
       <div style="position: relative">
         <select id="resultType" class="drac-select drac-select-white"
@@ -19,7 +19,7 @@
       </div>
     </label>
     <label for="listType"
-           class="drac-d-flex items-center gap-sm"
+           class="flex items-center gap-4"
            v-if="resultTypeIsList"
     >
       <span>List Type</span>
@@ -41,7 +41,7 @@
     </label>
     <div v-if="resultTypeIsList">
       <label for="template"
-             class="drac-d-flex items-center gap-sm"
+             class="flex items-center gap-4"
       >
         <span>Template</span>
         <input id="template"
@@ -54,7 +54,7 @@
       </div>
     </div>
     <label for="markHighStandardDeviationOfTime"
-           class="drac-d-flex items-center gap-sm"
+           class="flex items-center gap-4"
     >
       <span>Mark Hight Standard Deviation of Time</span>
       <input id="markHighStandardDeviationOfTime"
@@ -68,7 +68,7 @@
       />
     </label>
     <label for="standardDeviationOfTimeThreshold"
-           class="drac-d-flex items-center gap-sm"
+           class="flex items-center gap-4"
            v-if="settings.markHighStandardDeviationOfTime"
     >
       <span>Standard Deviation of Time Threshold</span>
@@ -83,7 +83,7 @@
     </label>
     <div>
       <label for="storeSettings"
-             class="drac-d-flex items-center gap-sm"
+             class="flex items-center gap-4"
       >
         <span>Store Settings</span>
         <input id="storeSettings"
@@ -161,17 +161,3 @@ export default class Settings extends Vue {
   }
 }
 </script>
-
-<style>
-.flex-col {
-  flex-direction: column;
-}
-
-.items-center {
-  align-items: center;
-}
-
-.gap-sm {
-  gap: var(--spacing-sm);
-}
-</style>

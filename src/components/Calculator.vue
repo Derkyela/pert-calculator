@@ -1,5 +1,5 @@
 <template>
-  <div class="drac-d-grid drac-my-sm">
+  <div class="grid grid-cols-12 gap-4 drac-my-sm">
     <div class="col-span-5">Activity Title</div>
     <div>Optimistic Time</div>
     <div>Most Likely Time</div>
@@ -9,7 +9,7 @@
   </div>
   <div v-for="activity in activities"
        :key="activity.id"
-       class="drac-d-grid drac-mb-sm"
+       class="grid grid-cols-12 gap-4 drac-mb-sm"
   >
     <activity :activity-id="activity.id"
               v-model:title="activity.title"
@@ -22,13 +22,13 @@
               @removeActivity="removeActivity"
     />
   </div>
-  <div class="drac-d-grid">
-    <div class="col-start-6 drac-px-sm border-l-4-invisible">{{ total.optimistic }}</div>
-    <div class="drac-px-sm border-l-4-invisible">{{ total.mostLikely }}</div>
-    <div class="drac-px-sm border-l-4-invisible">{{ total.pessimistic }}</div>
+  <div class="grid grid-cols-12 gap-4">
+    <div class="col-start-6 drac-px-sm border-l-4 border-transparent">{{ total.optimistic }}</div>
+    <div class="drac-px-sm border-l-4 border-transparent">{{ total.mostLikely }}</div>
+    <div class="drac-px-sm border-l-4 border-transparent">{{ total.pessimistic }}</div>
     <div class="drac-text-right drac-text-semibold">{{ total.expectedTime }}</div>
     <div class="col-start-11 col-span-2 drac-text-right">
-      <button type="button" @click="add()" class="drac-btn drac-bg-green">
+      <button type="button" @click="add()" class="drac-btn drac-bg-green drac-text-black">
         Add Activity
       </button>
     </div>
@@ -72,30 +72,3 @@ export default class Calculator extends Vue {
   }
 }
 </script>
-
-<style>
-.drac-d-grid {
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.col-span-2 {
-  grid-column: span 2 / span 2;
-}
-
-.col-span-5 {
-  grid-column: span 5 / span 5;
-}
-
-.col-start-6 {
-  grid-column-start: 6;
-}
-
-.col-start-11 {
-  grid-column-start: 11;
-}
-
-.border-l-4-invisible {
-  border-left: 4px solid transparent;
-}
-</style>

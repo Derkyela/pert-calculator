@@ -1,0 +1,7 @@
+@import 'tailwindcss/base';
+
+@import 'dracula-ui/styles/dracula-ui.css';
+
+@import 'tailwindcss/components';
+
+@import 'tailwindcss/utilities';
