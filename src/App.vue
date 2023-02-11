@@ -22,6 +22,7 @@ import 'dracula-ui/styles/dracula-ui.css';
 import { Options, Vue } from 'vue-class-component';
 import Result from '@/components/Result.vue';
 import Settings from '@/components/Settings.vue';
+import useSettingsStore from '@/stores/settings';
 import Calculator from './components/Calculator.vue';
 
 @Options({
@@ -32,9 +33,18 @@ import Calculator from './components/Calculator.vue';
   },
 })
 export default class App extends Vue {
-  tabs = ['Calculator', 'Result', 'Settings'];
+  private tabs = ['Calculator', 'Result', 'Settings'];
 
-  currentTab = 'Calculator';
+  private currentTab = 'Calculator';
+
+  private settingsStore = useSettingsStore();
+
+  created() {
+    const settings = localStorage.getItem('settings');
+    if (settings !== null) {
+      this.settingsStore.$patch(JSON.parse(settings));
+    }
+  }
 }
 </script>
 

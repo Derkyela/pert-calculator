@@ -13,6 +13,7 @@ export default defineStore('settings', {
       template: '#title#: #optimistic# - #mostLikely# - #pessimistic# -> #expectedTime#',
       markHighStandardDeviationOfTime: false,
       standardDeviationOfTimeThreshold: 1,
+      storeSettings: false,
     },
   }),
 });

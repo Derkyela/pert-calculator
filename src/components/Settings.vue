@@ -81,6 +81,25 @@
         />
       </div>
     </label>
+    <div>
+      <label for="storeSettings"
+             class="drac-d-flex items-center gap-sm"
+      >
+        <span>Store Settings</span>
+        <input id="storeSettings"
+               type="checkbox"
+               v-model="settings.storeSettings"
+               class="drac-switch drac-checkbox"
+               :class="[{
+               'drac-switch-green': settings.storeSettings,
+               'drac-switch-red': !settings.storeSettings
+             }]"
+        />
+      </label>
+      <div class="drac-text drac-text-grey drac-my-xxs">
+        Settings are stored in local storage and removed if you disable the feature again.
+      </div>
+    </div>
   </div>
 </template>
 
@@ -129,6 +148,16 @@ export default class Settings extends Vue {
     ];
 
     return variables.join(', ');
+  }
+
+  mounted() {
+    this.useSettingsStore.$subscribe((mutation, state) => {
+      if (state.settings.storeSettings) {
+        localStorage.setItem('settings', JSON.stringify(state));
+      } else {
+        localStorage.removeItem('settings');
+      }
+    });
   }
 }
 </script>
