@@ -1,5 +1,15 @@
 <template>
-  <h1 class="drac-heading text-4xl lg:text-5xl mb-4">PERT Activity Calculator</h1>
+  <div class="flex items-start justify-between">
+    <h1 class="drac-heading text-4xl lg:text-5xl mb-4 flex-1">PERT Activity Calculator</h1>
+    <a href="https://github.com/Derkyela/pert-calculator"
+       title="PERT Calculator Github Repository"
+       target="_blank"
+    >
+      <img alt="GitHub Repo"
+           src="https://img.shields.io/static/v1?label=&message=GitHub&color=8aff80&style=flat&logo=github&logoColor=21222c"
+      >
+    </a>
+  </div>
   <nav class="overflow-x-auto">
     <ul class="drac-tabs drac-tabs-white">
       <li v-for="(tab, index) in tabs"
