@@ -18,5 +18,13 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
+    'vuejs-accessibility/label-has-for': [
+      'error',
+      {
+        required: {
+          some: ['nesting', 'id'],
+        },
+      },
+    ],
   },
 };

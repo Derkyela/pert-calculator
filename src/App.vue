@@ -1,18 +1,20 @@
 <template>
-  <h1 class="drac-heading-2xl">PERT Activity Calculator</h1>
-  <ul class="drac-tabs drac-tabs-white">
-    <li v-for="(tab, index) in tabs"
-        :key="index"
-        class="drac-tab"
-        :class="[{'drac-tab-active': currentTab === tab}]"
-    >
-      <a @click="currentTab = tab"
-         @keydown="currentTab = tab"
-         class="drac-tab-link drac-text"
-      >{{ tab }}</a>
-    </li>
-  </ul>
-  <main class="drac-py-sm">
+  <h1 class="drac-heading text-4xl lg:text-5xl mb-4">PERT Activity Calculator</h1>
+  <nav class="overflow-x-auto">
+    <ul class="drac-tabs drac-tabs-white">
+      <li v-for="(tab, index) in tabs"
+          :key="index"
+          class="drac-tab"
+          :class="[{'drac-tab-active': currentTab === tab}]"
+      >
+        <a @click="currentTab = tab"
+           @keydown="currentTab = tab"
+           class="drac-tab-link drac-text"
+        >{{ tab }}</a>
+      </li>
+    </ul>
+  </nav>
+  <main class="flex flex-col gap-4 py-4">
     <Component :is="currentTab" />
   </main>
 </template>

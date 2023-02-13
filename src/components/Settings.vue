@@ -1,8 +1,8 @@
 <template>
-  <div class="drac-box flex flex-col gap-4 drac-my-sm">
-    <label for="resultType" class="flex items-center gap-4">
-      <span>Result Type</span>
-      <div style="position: relative">
+  <div class="drac-box flex flex-col gap-4 my-4">
+    <div class="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
+      <label for="resultType">Result Type</label>
+      <div class="relative">
         <select id="resultType" class="drac-select drac-select-white"
                 v-model="settings.resultType">
           <option v-for="Type in resultTypeOptions" :key="Type">{{ Type }}</option>
@@ -17,13 +17,10 @@
           </svg>
         </div>
       </div>
-    </label>
-    <label for="listType"
-           class="flex items-center gap-4"
-           v-if="resultTypeIsList"
-    >
-      <span>List Type</span>
-      <div style="position: relative">
+    </div>
+    <div v-if="resultTypeIsList" class="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
+      <label for="listType">List Type</label>
+      <div class="relative">
         <select id="listType" class="drac-select drac-select-white"
                 v-model="settings.listType">
           <option v-for="Type in listTypeOptions" :key="Type">{{ Type }}</option>
@@ -38,25 +35,21 @@
           </svg>
         </div>
       </div>
-    </label>
+    </div>
     <div v-if="resultTypeIsList">
-      <label for="template"
-             class="flex items-center gap-4"
-      >
-        <span>Template</span>
+      <div class="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
+        <label for="template">Template</label>
         <input id="template"
                v-model="settings.template"
-               class="drac-input drac-input-white drac-text-white"
+               class="flex-shrink drac-input drac-input-white drac-text-white"
         />
-      </label>
-      <div class="drac-text drac-text-grey drac-my-xxs">
+      </div>
+      <div class="drac-text drac-text-grey my-1.5">
         Available template variable: {{ availableTemplateVariables }}
       </div>
     </div>
-    <label for="markHighStandardDeviationOfTime"
-           class="flex items-center gap-4"
-    >
-      <span>Mark Hight Standard Deviation of Time</span>
+    <div class="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
+      <label for="markHighStandardDeviationOfTime">Mark Hight Standard Deviation of Time</label>
       <input id="markHighStandardDeviationOfTime"
              type="checkbox"
              v-model="settings.markHighStandardDeviationOfTime"
@@ -66,13 +59,12 @@
                'drac-switch-red': !settings.markHighStandardDeviationOfTime
              }]"
       />
-    </label>
-    <label for="standardDeviationOfTimeThreshold"
-           class="flex items-center gap-4"
-           v-if="settings.markHighStandardDeviationOfTime"
+    </div>
+    <div v-if="settings.markHighStandardDeviationOfTime"
+         class="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4"
     >
-      <span>Standard Deviation of Time Threshold</span>
-      <div class="drac-w-xxs">
+      <label for="standardDeviationOfTimeThreshold">Standard Deviation of Time Threshold</label>
+      <div class="lg:w-28">
         <input id="standardDeviationOfTimeThreshold"
                :value="settings.standardDeviationOfTimeThreshold"
                @input="settings.standardDeviationOfTimeThreshold = toNumber($event.target.value)"
@@ -80,12 +72,10 @@
                class="drac-input drac-input-white drac-text-white"
         />
       </div>
-    </label>
+    </div>
     <div>
-      <label for="storeSettings"
-             class="flex items-center gap-4"
-      >
-        <span>Store Settings</span>
+      <div class="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
+        <label for="storeSettings">Store Settings</label>
         <input id="storeSettings"
                type="checkbox"
                v-model="settings.storeSettings"
@@ -95,8 +85,8 @@
                'drac-switch-red': !settings.storeSettings
              }]"
         />
-      </label>
-      <div class="drac-text drac-text-grey drac-my-xxs">
+      </div>
+      <div class="drac-text drac-text-grey my-1.5">
         Settings are stored in local storage and removed if you disable the feature again.
       </div>
     </div>

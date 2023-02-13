@@ -1,9 +1,9 @@
 <template>
-  <ul class="drac-list drac-list-unordered drac-my-sm" v-if="showUnorderedList">
+  <ul class="drac-list drac-list-unordered my-4" v-if="showUnorderedList">
     <li v-for="activity in activities" :key="activity.id" v-html="activityString(activity)"></li>
     <li>{{ totalString }}</li>
   </ul>
-  <ol class="drac-list drac-list-ordered drac-my-sm" v-if="showOrderedList">
+  <ol class="drac-list drac-list-ordered my-4" v-if="showOrderedList">
     <li v-for="activity in activities" :key="activity.id" v-html="activityString(activity)"></li>
     <li>{{ totalString }}</li>
   </ol>
