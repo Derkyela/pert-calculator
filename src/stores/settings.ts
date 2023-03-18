@@ -14,6 +14,7 @@ export default defineStore('settings', {
       markHighStandardDeviationOfTime: false,
       standardDeviationOfTimeThreshold: 1,
       storeSettings: false,
+      storeActivities: false,
     },
   }),
 });

@@ -90,11 +90,30 @@
         Settings are stored in local storage and removed if you disable the feature again.
       </div>
     </div>
+    <div>
+      <div class="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
+        <label for="storeActivities">Store Activities</label>
+        <input id="storeActivities"
+               type="checkbox"
+               v-model="settings.storeActivities"
+               class="drac-switch drac-checkbox"
+               :class="[{
+               'drac-switch-green': settings.storeActivities,
+               'drac-switch-red': !settings.storeActivities
+             }]"
+        />
+      </div>
+      <div class="drac-text drac-text-grey my-1.5">
+        Automatically saves the current state of activities local storage and removes it if you
+        disable the feature again.
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import useActivitiesStore from '@/stores/activities';
 import useSettingsStore from '@/stores/settings';
 import { ListType, ResultType, SettingsInterface } from '@/interfaces/Settings';
 import { toNumber } from '@/utils';
@@ -107,6 +126,8 @@ import { toNumber } from '@/utils';
 })
 export default class Settings extends Vue {
   private useSettingsStore = useSettingsStore();
+
+  private useActivitiesStore = useActivitiesStore();
 
   private get settings(): SettingsInterface {
     return this.useSettingsStore.settings;
@@ -146,6 +167,12 @@ export default class Settings extends Vue {
         localStorage.setItem('settings', JSON.stringify(state));
       } else {
         localStorage.removeItem('settings');
+      }
+
+      if (state.settings.storeActivities) {
+        localStorage.setItem('activities', JSON.stringify(this.useActivitiesStore.activities));
+      } else {
+        localStorage.removeItem('activities');
       }
     });
   }

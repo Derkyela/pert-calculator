@@ -45,6 +45,7 @@ import { ActivityInterface } from '@/interfaces/Activity';
 import { Total } from '@/interfaces/Total';
 import { Options, Vue } from 'vue-class-component';
 import useActivitiesStore from '@/stores/activities';
+import useSettingsStore from '@/stores/settings';
 import Activity from './Activity.vue';
 
 @Options({
@@ -55,6 +56,8 @@ import Activity from './Activity.vue';
 
 export default class Calculator extends Vue {
   private useActivitiesStore = useActivitiesStore();
+
+  private useSettingsStore = useSettingsStore();
 
   private get activities(): ActivityInterface[] {
     return this.useActivitiesStore.activities;
@@ -74,6 +77,14 @@ export default class Calculator extends Vue {
 
   private get total(): Total {
     return this.useActivitiesStore.total;
+  }
+
+  mounted() {
+    this.useActivitiesStore.$subscribe((mutation, state) => {
+      if (this.useSettingsStore.settings.storeActivities) {
+        localStorage.setItem('activities', JSON.stringify(state));
+      }
+    });
   }
 }
 </script>

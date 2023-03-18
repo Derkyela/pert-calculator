@@ -15,4 +15,5 @@ export interface SettingsInterface {
   markHighStandardDeviationOfTime: boolean,
   standardDeviationOfTimeThreshold: number,
   storeSettings: boolean,
+  storeActivities: boolean,
 }

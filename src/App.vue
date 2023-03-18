@@ -34,6 +34,7 @@ import './assets/index.css';
 import { Options, Vue } from 'vue-class-component';
 import Result from '@/components/Result.vue';
 import Settings from '@/components/Settings.vue';
+import useActivitiesStore from '@/stores/activities';
 import useSettingsStore from '@/stores/settings';
 import Calculator from './components/Calculator.vue';
 
@@ -49,12 +50,18 @@ export default class App extends Vue {
 
   private currentTab = 'Calculator';
 
+  private activitiesStore = useActivitiesStore();
+
   private settingsStore = useSettingsStore();
 
   created() {
     const settings = localStorage.getItem('settings');
     if (settings !== null) {
       this.settingsStore.$patch(JSON.parse(settings));
+    }
+    const activities = localStorage.getItem('activities');
+    if (activities !== null) {
+      this.activitiesStore.$patch(JSON.parse(activities));
     }
   }
 }
