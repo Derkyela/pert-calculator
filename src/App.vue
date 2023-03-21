@@ -42,6 +42,13 @@
       >
         Export Activities
       </a>
+      <button type="button"
+              title="Remove all activities"
+              @click="removeActivities()"
+              class="drac-btn drac-border-red drac-btn-outline drac-text-red"
+      >
+        Clear
+      </button>
     </div>
   </nav>
   <main class="flex flex-col gap-4 py-4">
@@ -132,6 +139,13 @@ function getActivitiesExportString() {
   const encodedActivities = encodeURIComponent(JSON.stringify(activitiesStore.activities));
 
   return `data:application/json;charset=utf-8,${encodedActivities}`;
+}
+
+function removeActivities() {
+  // eslint-disable-next-line no-alert
+  if (window.confirm('Are you sure you want to remove all activities?')) {
+    activitiesStore.$reset();
+  }
 }
 </script>
 
