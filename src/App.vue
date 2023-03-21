@@ -12,58 +12,50 @@
   </div>
   <nav class="overflow-x-auto">
     <ul class="drac-tabs drac-tabs-white">
-      <li v-for="(tab, index) in tabs"
-          :key="index"
+      <li v-for="(_, tab) in tabs"
+          :key="tab"
           class="drac-tab"
           :class="[{'drac-tab-active': currentTab === tab}]"
       >
         <a @click="currentTab = tab"
-           @keydown="currentTab = tab"
+           @keydown.space="currentTab = tab"
            class="drac-tab-link drac-text"
+           tabindex="0"
         >{{ tab }}</a>
       </li>
     </ul>
   </nav>
   <main class="flex flex-col gap-4 py-4">
-    <Component :is="currentTab" />
+    <Component :is="tabs[currentTab]" />
   </main>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import './assets/index.css';
-import { Options, Vue } from 'vue-class-component';
+import { ref } from 'vue';
 import Result from '@/components/Result.vue';
 import Settings from '@/components/Settings.vue';
 import useActivitiesStore from '@/stores/activities';
 import useSettingsStore from '@/stores/settings';
 import Calculator from './components/Calculator.vue';
 
-@Options({
-  components: {
-    Calculator,
-    Result,
-    Settings,
-  },
-})
-export default class App extends Vue {
-  private tabs = ['Calculator', 'Result', 'Settings'];
+const tabs = {
+  Calculator,
+  Result,
+  Settings,
+};
+const currentTab = ref('Calculator');
 
-  private currentTab = 'Calculator';
+const activitiesStore = useActivitiesStore();
+const settingsStore = useSettingsStore();
 
-  private activitiesStore = useActivitiesStore();
-
-  private settingsStore = useSettingsStore();
-
-  created() {
-    const settings = localStorage.getItem('settings');
-    if (settings !== null) {
-      this.settingsStore.$patch(JSON.parse(settings));
-    }
-    const activities = localStorage.getItem('activities');
-    if (activities !== null) {
-      this.activitiesStore.$patch(JSON.parse(activities));
-    }
-  }
+const settings = localStorage.getItem('settings');
+if (settings !== null) {
+  settingsStore.$patch(JSON.parse(settings));
+}
+const activities = localStorage.getItem('activities');
+if (activities !== null) {
+  activitiesStore.$patch(JSON.parse(activities));
 }
 </script>
 

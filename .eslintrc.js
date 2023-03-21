@@ -26,5 +26,7 @@ module.exports = {
         },
       },
     ],
+    // TODO: rename components -> prefix with "Pert"
+    'vue/multi-word-component-names': 'off',
   },
 };

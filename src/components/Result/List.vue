@@ -1,71 +1,62 @@
 <template>
-  <ul class="drac-list drac-list-unordered my-4" v-if="showUnorderedList">
-    <li v-for="activity in activities" :key="activity.id" v-html="activityString(activity)"></li>
-    <li>{{ totalString }}</li>
+  <ul class="drac-list drac-list-unordered my-4" v-if="showUnorderedList()">
+    <li v-for="activity in activities" :key="activity.id" v-html="getActivityString(activity)"></li>
+    <li>{{ getTotalString() }}</li>
   </ul>
   <ol class="drac-list drac-list-ordered my-4" v-if="showOrderedList">
-    <li v-for="activity in activities" :key="activity.id" v-html="activityString(activity)"></li>
-    <li>{{ totalString }}</li>
+    <li v-for="activity in activities" :key="activity.id" v-html="getActivityString(activity)"></li>
+    <li>{{ getTotalString() }}</li>
   </ol>
 </template>
 
-<script lang="ts">
-import { Options, Vue } from 'vue-class-component';
-import { ListType, SettingsInterface } from '@/interfaces/Settings';
+<script setup lang="ts">
+import { computed, defineProps } from 'vue';
+import { ListType } from '@/interfaces/Settings';
 import { ActivityInterface } from '@/interfaces/Activity';
 import { Total } from '@/interfaces/Total';
 import useSettingsStore from '@/stores/settings';
 
-@Options({
-  props: {
-    activities: {
-      type: Array,
-      required: true,
-    },
-    listType: {
-      type: String,
-      required: true,
-    },
-    template: {
-      type: String,
-      required: true,
-    },
-    total: {
-      type: Object,
-      required: true,
-    },
+const props = defineProps({
+  activities: {
+    type: Array,
+    required: true,
   },
-})
-export default class Result extends Vue {
-  private listType!: ListType;
+  listType: {
+    type: String,
+    required: true,
+  },
+  template: {
+    type: String,
+    required: true,
+  },
+  total: {
+    type: Object,
+    required: true,
+  },
+});
 
-  private template!: string;
+const settingsStore = useSettingsStore();
 
-  private total!: Total;
+const settings = computed(() => settingsStore.settings);
 
-  private useSettingsStore = useSettingsStore();
+function showUnorderedList(): boolean {
+  return props.listType === ListType.Unordered;
+}
 
-  private get settings(): SettingsInterface {
-    return this.useSettingsStore.settings;
-  }
+function showOrderedList(): boolean {
+  return props.listType === ListType.Ordered;
+}
 
-  private get showUnorderedList(): boolean {
-    return this.listType === ListType.Unordered;
-  }
+function getActivityString(activity: ActivityInterface): string {
+  let activityString = props.template;
 
-  private get showOrderedList(): boolean {
-    return this.listType === ListType.Ordered;
-  }
-
-  private activityString(activity: ActivityInterface): string {
-    let activityString = this.template;
-
-    Object.getOwnPropertyNames(activity).forEach((prop) => {
+  Object.getOwnPropertyNames(activity)
+    .forEach((prop) => {
       if (
         prop === 'standardDeviationOfTime'
-        && this.settings.markHighStandardDeviationOfTime
+        && settings.value.markHighStandardDeviationOfTime
         && activity[prop as keyof ActivityInterface]
-          > this.settings.standardDeviationOfTimeThreshold
+        > settings.value.standardDeviationOfTimeThreshold
       ) {
         activityString = activityString.replaceAll(
           `#${prop}#`,
@@ -76,21 +67,21 @@ export default class Result extends Vue {
       activityString = activityString.replaceAll(`#${prop}#`, activity[prop as keyof ActivityInterface].toString());
     });
 
-    return activityString;
-  }
+  return activityString;
+}
 
-  private get totalString(): string {
-    let totalString = this.template;
+function getTotalString(): string {
+  let totalString = props.template;
 
-    totalString = totalString.replaceAll('#title#', 'Total');
+  totalString = totalString.replaceAll('#title#', 'Total');
 
-    Object.getOwnPropertyNames(this.total).forEach((prop) => {
-      totalString = totalString.replaceAll(`#${prop}#`, this.total[prop as keyof Total].toString());
+  Object.getOwnPropertyNames(props.total)
+    .forEach((prop) => {
+      totalString = totalString.replaceAll(`#${prop}#`, props.total[prop as keyof Total].toString());
     });
 
-    totalString = totalString.replaceAll(/#\w*#/g, '');
+  totalString = totalString.replaceAll(/#\w*#/g, '');
 
-    return totalString;
-  }
+  return totalString;
 }
 </script>

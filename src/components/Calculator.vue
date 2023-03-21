@@ -8,7 +8,7 @@
     <div class="col-span-2 text-right">Standard Deviation of Time</div>
   </div>
   <template v-for="activity in activities" :key="activity.id">
-    <activity :activity-id="activity.id"
+    <Activity :activity-id="activity.id"
               v-model:title="activity.title"
               v-model:optimistic="activity.optimistic"
               v-model:most-likely="activity.mostLikely"
@@ -40,51 +40,32 @@
   </div>
 </template>
 
-<script lang="ts">
-import { ActivityInterface } from '@/interfaces/Activity';
-import { Total } from '@/interfaces/Total';
-import { Options, Vue } from 'vue-class-component';
+<script setup lang="ts">
 import useActivitiesStore from '@/stores/activities';
 import useSettingsStore from '@/stores/settings';
-import Activity from './Activity.vue';
+import Activity from '@/components/Activity.vue';
+import { computed, onMounted } from 'vue';
 
-@Options({
-  components: {
-    Activity,
-  },
-})
+const activitiesStore = useActivitiesStore();
+const settingsStore = useSettingsStore();
 
-export default class Calculator extends Vue {
-  private useActivitiesStore = useActivitiesStore();
+const activities = computed(() => activitiesStore.activities);
+const canDelete = computed(() => activitiesStore.canDelete);
+const total = computed(() => activitiesStore.total);
 
-  private useSettingsStore = useSettingsStore();
-
-  private get activities(): ActivityInterface[] {
-    return this.useActivitiesStore.activities;
-  }
-
-  private add(): void {
-    this.useActivitiesStore.add();
-  }
-
-  private removeActivity(activityId: number): void {
-    this.useActivitiesStore.remove(activityId);
-  }
-
-  private get canDelete(): boolean {
-    return this.useActivitiesStore.canDelete;
-  }
-
-  private get total(): Total {
-    return this.useActivitiesStore.total;
-  }
-
-  mounted() {
-    this.useActivitiesStore.$subscribe((mutation, state) => {
-      if (this.useSettingsStore.settings.storeActivities) {
-        localStorage.setItem('activities', JSON.stringify(state));
-      }
-    });
-  }
+function add(): void {
+  activitiesStore.add();
 }
+
+function removeActivity(activityId: number): void {
+  activitiesStore.remove(activityId);
+}
+
+onMounted(() => {
+  activitiesStore.$subscribe((mutation, state) => {
+    if (settingsStore.settings.storeActivities) {
+      localStorage.setItem('activities', JSON.stringify(state));
+    }
+  });
+});
 </script>

@@ -7,7 +7,7 @@
              :id="`title_${activityId}`"
              :value="title"
              :placeholder="titlePlaceholder"
-             @input="$emit('update:title', $event.target.value);"
+             @input="emit('update:title', $event.target.value);"
              @focus="$event.target.select()"
              aria-label="Activity Title"
              class="drac-input drac-input-white"
@@ -21,7 +21,7 @@
       <label :for="`optimistic_${activityId}`" class="lg:hidden">Optimistic:</label>
       <input :value="optimistic"
              :id="`optimistic_${activityId}`"
-             @input="$emit('update:optimistic', toNumber($event.target.value));
+             @input="emit('update:optimistic', toNumber($event.target.value));
           $nextTick(() => updateCalculatedValues())"
              @focus="$event.target.select()"
              @keydown.up="increment($event, 'update:optimistic')"
@@ -38,7 +38,7 @@
       <label :for="`mostLikely_${activityId}`" class="lg:hidden">Most Likely:</label>
       <input :value="mostLikely"
              :id="`mostLikely_${activityId}`"
-             @input="$emit('update:mostLikely', toNumber($event.target.value));
+             @input="emit('update:mostLikely', toNumber($event.target.value));
           $nextTick(() => updateCalculatedValues())"
              @focus="$event.target.select()"
              @keydown.up="increment($event, 'update:mostLikely')"
@@ -51,7 +51,7 @@
       <label :for="`pessimistic_${activityId}`" class="lg:hidden">Pessimistic:</label>
       <input :value="pessimistic"
              :id="`pessimistic_${activityId}`"
-             @input="$emit('update:pessimistic', toNumber($event.target.value));
+             @input="emit('update:pessimistic', toNumber($event.target.value));
           $nextTick(() => updateCalculatedValues())"
              @focus="$event.target.select()"
              @keydown.up="increment($event, 'update:pessimistic')"
@@ -76,7 +76,7 @@
       {{ standardDeviationOfTime }}
     </div>
     <button type="button"
-            @click="$emit('removeActivity', activityId)"
+            @click="emit('removeActivity', activityId)"
             v-if="canDelete"
             class="col-start-12 drac-btn drac-bg-red drac-text-black"
     >
@@ -85,106 +85,111 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Options, Vue } from 'vue-class-component';
-// eslint-disable-next-line import/no-unresolved,import/extensions
+<script setup lang="ts">
 import useSettingsStore from '@/stores/settings';
-import { SettingsInterface } from '@/interfaces/Settings';
-import { round, toNumber } from '../utils';
+import { round, toNumber } from '@/utils';
+import {
+  computed,
+  defineEmits,
+  defineProps,
+  nextTick,
+} from 'vue';
+import type { TypeActivityEvents } from '@/types';
 
-@Options({
-  methods: { toNumber },
-  emits: [
-    'removeActivity',
-    'update:title',
-    'update:optimistic',
-    'update:mostLikely',
-    'update:pessimistic',
-    'update:expectedTime',
-    'update:standardDeviationOfTime',
-  ],
-  props: {
-    activityId: Number,
-    title: String,
-    optimistic: Number,
-    mostLikely: Number,
-    pessimistic: Number,
-    expectedTime: Number,
-    standardDeviationOfTime: Number,
-    canDelete: Boolean,
+const STEP = 0.5;
+
+const props = defineProps({
+  activityId: {
+    type: Number,
+    default: 1,
   },
-  computed: {
-    titlePlaceholder: String,
+  title: {
+    type: String,
+    default: '',
   },
-})
-export default class Activity extends Vue {
-  private step = 0.5;
+  optimistic: {
+    type: Number,
+    default: 0,
+  },
+  mostLikely: {
+    type: Number,
+    default: 0,
+  },
+  pessimistic: {
+    type: Number,
+    default: 0,
+  },
+  expectedTime: {
+    type: Number,
+    default: 0,
+  },
+  standardDeviationOfTime: {
+    type: Number,
+    default: 0,
+  },
+  canDelete: {
+    type: Boolean,
+    default: false,
+  },
+});
 
-  canDelete!: boolean;
+const emit = defineEmits([
+  'removeActivity',
+  'update:title',
+  'update:optimistic',
+  'update:mostLikely',
+  'update:pessimistic',
+  'update:expectedTime',
+  'update:standardDeviationOfTime',
+]);
 
-  activityId!: number;
+const settingsStore = useSettingsStore();
 
-  optimistic!: number;
+const settings = computed(() => settingsStore.settings);
+const titlePlaceholder = computed(() => `Activity ${props.activityId}`);
 
-  mostLikely!: number;
-
-  pessimistic!: number;
-
-  standardDeviationOfTime!: number;
-
-  private useSettingsStore = useSettingsStore();
-
-  private get settings(): SettingsInterface {
-    return this.useSettingsStore.settings;
+function calcExpectedTime(): void {
+  if (props.mostLikely === 0 && props.pessimistic === 0) {
+    return;
   }
 
-  private calcExpectedTime(): void {
-    if (this.mostLikely === 0 && this.pessimistic === 0) {
-      return;
-    }
-
-    const expectedTime = (this.optimistic + 4 * this.mostLikely + this.pessimistic) / 6;
-    this.$emit('update:expectedTime', round(expectedTime));
-  }
-
-  private updateCalculatedValues(): void {
-    this.calcExpectedTime();
-    this.calcStandardDeviationOfTime();
-  }
-
-  private calcStandardDeviationOfTime(): void {
-    if (this.pessimistic === 0) {
-      return;
-    }
-
-    const standardDeviationOfTime = (this.pessimistic - this.optimistic) / 6;
-    this.$emit('update:standardDeviationOfTime', round(standardDeviationOfTime));
-  }
-
-  get titlePlaceholder(): string {
-    return `Activity ${this.activityId}`;
-  }
-
-  private increment(event: Event, emitName: string): void {
-    const element = event.target as HTMLInputElement;
-
-    this.$emit(emitName, toNumber(element.value) + this.step);
-    this.$nextTick(() => this.calcExpectedTime());
-  }
-
-  private decrement(event: Event, emitName: string): void {
-    const element = event.target as HTMLInputElement;
-
-    this.$emit(emitName, toNumber(element.value) - this.step);
-    this.$nextTick(() => this.calcExpectedTime());
-  }
-
-  private get markHighStandardDeviationOfTime(): boolean {
-    if (!this.settings.markHighStandardDeviationOfTime) {
-      return false;
-    }
-
-    return this.standardDeviationOfTime > this.settings.standardDeviationOfTimeThreshold;
-  }
+  const expectedTime = (props.optimistic + 4 * props.mostLikely + props.pessimistic) / 6;
+  emit('update:expectedTime', round(expectedTime));
 }
+
+function calcStandardDeviationOfTime(): void {
+  if (props.pessimistic === 0) {
+    return;
+  }
+
+  const standardDeviationOfTime = (props.pessimistic - props.optimistic) / 6;
+  emit('update:standardDeviationOfTime', round(standardDeviationOfTime));
+}
+
+function updateCalculatedValues(): void {
+  calcExpectedTime();
+  calcStandardDeviationOfTime();
+}
+
+function increment(event: Event, emitName: TypeActivityEvents): void {
+  const element = event.target as HTMLInputElement;
+
+  emit(emitName, toNumber(element.value) + STEP);
+  nextTick(() => calcExpectedTime());
+}
+
+function decrement(event: Event, emitName: TypeActivityEvents): void {
+  const element = event.target as HTMLInputElement;
+
+  emit(emitName, toNumber(element.value) - STEP);
+  nextTick(() => calcExpectedTime());
+}
+
+const markHighStandardDeviationOfTime = computed(() => {
+  if (!settings.value.markHighStandardDeviationOfTime || !props.standardDeviationOfTime) {
+    return false;
+  }
+
+  return props.standardDeviationOfTime > settings.value.standardDeviationOfTimeThreshold;
+});
 </script>

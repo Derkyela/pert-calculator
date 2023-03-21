@@ -17,24 +17,28 @@
           'drac-text-white': !markHighStandardDeviationOfTime(activity.standardDeviationOfTime),
           'drac-text-red': markHighStandardDeviationOfTime(activity.standardDeviationOfTime)
         }]"
-        >{{ activity.title }}</td>
+        >{{ activity.title }}
+        </td>
         <td :class="[{
           'drac-text-white': !markHighStandardDeviationOfTime(activity.standardDeviationOfTime),
           'drac-text-red': markHighStandardDeviationOfTime(activity.standardDeviationOfTime)
         }]"
-        >{{ activity.optimistic }}</td>
+        >{{ activity.optimistic }}
+        </td>
         <td>{{ activity.mostLikely }}</td>
         <td :class="[{
           'drac-text-white': !markHighStandardDeviationOfTime(activity.standardDeviationOfTime),
           'drac-text-red': markHighStandardDeviationOfTime(activity.standardDeviationOfTime)
         }]"
-        >{{ activity.pessimistic }}</td>
+        >{{ activity.pessimistic }}
+        </td>
         <td>{{ activity.expectedTime }}</td>
         <td :class="[{
           'drac-text-white': !markHighStandardDeviationOfTime(activity.standardDeviationOfTime),
           'drac-text-red': markHighStandardDeviationOfTime(activity.standardDeviationOfTime)
         }]"
-        >{{ activity.standardDeviationOfTime }}</td>
+        >{{ activity.standardDeviationOfTime }}
+        </td>
       </tr>
       </tbody>
       <tfoot>
@@ -50,36 +54,30 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Options, Vue } from 'vue-class-component';
-import { SettingsInterface } from '@/interfaces/Settings';
+<script setup lang="ts">
+import { computed, defineProps } from 'vue';
 import useSettingsStore from '@/stores/settings';
 
-@Options({
-  props: {
-    activities: {
-      type: Array,
-      required: true,
-    },
-    total: {
-      type: Array,
-      required: true,
-    },
+defineProps({
+  activities: {
+    type: Array,
+    required: true,
   },
-})
-export default class Result extends Vue {
-  private useSettingsStore = useSettingsStore();
+  total: {
+    type: Array,
+    required: true,
+  },
+});
 
-  private get settings(): SettingsInterface {
-    return this.useSettingsStore.settings;
+const settingsStore = useSettingsStore();
+
+const settings = computed(() => settingsStore.settings);
+
+function markHighStandardDeviationOfTime(standardDeviationOfTime: number): boolean {
+  if (!settings.value.markHighStandardDeviationOfTime) {
+    return false;
   }
 
-  private markHighStandardDeviationOfTime(standardDeviationOfTime: number): boolean {
-    if (!this.settings.markHighStandardDeviationOfTime) {
-      return false;
-    }
-
-    return standardDeviationOfTime > this.settings.standardDeviationOfTimeThreshold;
-  }
+  return standardDeviationOfTime > settings.value.standardDeviationOfTimeThreshold;
 }
 </script>

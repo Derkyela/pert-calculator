@@ -10,41 +10,20 @@
   <p v-else>Please add an activity first.</p>
 </template>
 
-<script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+<script setup lang="ts">
+import { computed } from 'vue';
 import useActivitiesStore from '@/stores/activities';
 import useSettingsStore from '@/stores/settings';
-import { ActivityInterface } from '@/interfaces/Activity';
-import { SettingsInterface } from '@/interfaces/Settings';
-import List from '@/components/Result/List.vue';
-import Table from '@/components/Result/Table.vue';
-import { Total } from '@/interfaces/Total';
 
-@Options({
-  components: {
-    List,
-    Table,
-  },
-})
-export default class Result extends Vue {
-  private useActivitiesStore = useActivitiesStore();
+const activitiesStore = useActivitiesStore();
 
-  private useSettingsStore = useSettingsStore();
+const settingsStore = useSettingsStore();
 
-  private get activities(): ActivityInterface[] {
-    return this.useActivitiesStore.activities;
-  }
+const activities = computed(() => activitiesStore.activities);
 
-  private get settings(): SettingsInterface {
-    return this.useSettingsStore.settings;
-  }
+const settings = computed(() => settingsStore.settings);
 
-  private get total(): Total {
-    return this.useActivitiesStore.total;
-  }
+const total = computed(() => activitiesStore.total);
 
-  private get canShow(): boolean {
-    return this.total.expectedTime > 0;
-  }
-}
+const canShow = computed(() => total.value.expectedTime > 0);
 </script>

@@ -45,7 +45,8 @@
         />
       </div>
       <div class="drac-text drac-text-grey my-1.5">
-        Available template variable: {{ availableTemplateVariables }}
+        Available template variable: #title#, #optimistic#, #mostLikely#, #pessimistic#,
+         #expectedTime#, #standardDeviationOfTime#
       </div>
     </div>
     <div class="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
@@ -67,7 +68,8 @@
       <div class="lg:w-28">
         <input id="standardDeviationOfTimeThreshold"
                :value="settings.standardDeviationOfTimeThreshold"
-               @input="settings.standardDeviationOfTimeThreshold = toNumber($event.target.value)"
+               @input="settings.standardDeviationOfTimeThreshold
+                        = convertToNumber($event.target.value)"
                @focus="$event.target.select()"
                class="drac-input drac-input-white drac-text-white"
         />
@@ -111,70 +113,46 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+<script setup lang="ts">
+import { defineEmits, computed, onMounted } from 'vue';
 import useActivitiesStore from '@/stores/activities';
 import useSettingsStore from '@/stores/settings';
 import { ListType, ResultType, SettingsInterface } from '@/interfaces/Settings';
 import { toNumber } from '@/utils';
 
-@Options({
-  methods: { toNumber },
-  emits: [
-    'set:standardDeviationOfTimeThreshold',
-  ],
-})
-export default class Settings extends Vue {
-  private useSettingsStore = useSettingsStore();
+defineEmits(['set:standardDeviationOfTimeThreshold']);
 
-  private useActivitiesStore = useActivitiesStore();
+const settingsStore = useSettingsStore();
 
-  private get settings(): SettingsInterface {
-    return this.useSettingsStore.settings;
-  }
+const activitiesStore = useActivitiesStore();
 
-  // eslint-disable-next-line class-methods-use-this
-  private get resultTypeOptions(): string[] {
-    return Object.values(ResultType);
-  }
+const settings = computed<SettingsInterface>(() => settingsStore.settings);
 
-  // eslint-disable-next-line class-methods-use-this
-  private get listTypeOptions(): string[] {
-    return Object.values(ListType);
-  }
+const resultTypeOptions = Object.values(ResultType);
 
-  private get resultTypeIsList(): boolean {
-    return this.settings.resultType === ResultType.List;
-  }
+const listTypeOptions = Object.values(ListType);
 
-  // eslint-disable-next-line class-methods-use-this
-  private get availableTemplateVariables(): string {
-    const variables = [
-      '#title#',
-      '#optimistic#',
-      '#mostLikely#',
-      '#pessimistic#',
-      '#expectedTime#',
-      '#standardDeviationOfTime#',
-    ];
+onMounted(() => {
+  settingsStore.$subscribe((mutation, state) => {
+    if (state.settings.storeSettings) {
+      localStorage.setItem('settings', JSON.stringify(state));
+    } else {
+      localStorage.removeItem('settings');
+    }
 
-    return variables.join(', ');
-  }
+    if (state.settings.storeActivities) {
+      localStorage.setItem('activities', JSON.stringify(activitiesStore.activities));
+    } else {
+      localStorage.removeItem('activities');
+    }
+  });
+});
 
-  mounted() {
-    this.useSettingsStore.$subscribe((mutation, state) => {
-      if (state.settings.storeSettings) {
-        localStorage.setItem('settings', JSON.stringify(state));
-      } else {
-        localStorage.removeItem('settings');
-      }
+function resultTypeIsList(): boolean {
+  return settings.value.resultType === ResultType.List;
+}
 
-      if (state.settings.storeActivities) {
-        localStorage.setItem('activities', JSON.stringify(this.useActivitiesStore.activities));
-      } else {
-        localStorage.removeItem('activities');
-      }
-    });
-  }
+function convertToNumber(val: string): number {
+  return toNumber(val);
 }
 </script>
