@@ -36,12 +36,12 @@
              accept="application/json"
              @change="importActivities($event)"
       >
-      <button type="button"
-              @click="exportActivities()"
-              class="drac-btn drac-border-green drac-btn-outline drac-text-green"
+      <a :href="getActivitiesExportString()"
+         download="activities.json"
+         class="drac-btn drac-border-green drac-btn-outline drac-text-green"
       >
         Export Activities
-      </button>
+      </a>
     </div>
   </nav>
   <main class="flex flex-col gap-4 py-4">
@@ -126,6 +126,12 @@ function importActivities(event: Event): void {
   });
 
   reader.readAsText(file);
+}
+
+function getActivitiesExportString() {
+  const encodedActivities = encodeURIComponent(JSON.stringify(activitiesStore.activities));
+
+  return `data:application/json;charset=utf-8,${encodedActivities}`;
 }
 </script>
 
