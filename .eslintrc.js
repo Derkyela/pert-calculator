@@ -1,21 +1,25 @@
+/* eslint-env node */
+require('@rushstack/eslint-patch/modern-module-resolution');
+
 module.exports = {
   root: true,
   env: {
     node: true,
+    es2022: true,
   },
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:vue/vue3-essential',
     '@vue/airbnb',
-    '@vue/typescript/recommended',
+    '@vue/eslint-config-typescript',
   ],
   plugins: ['@typescript-eslint'],
   parserOptions: {
-    ecmaVersion: 2020,
+    ecmaVersion: 'latest',
   },
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    // 'no-console': import.meta.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    // 'no-debugger': import.meta.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
     'vuejs-accessibility/label-has-for': [
@@ -28,5 +32,13 @@ module.exports = {
     ],
     // TODO: rename components -> prefix with "Pert"
     'vue/multi-word-component-names': 'off',
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: [
+          'vite.config.ts',
+        ],
+      },
+    ],
   },
 };
