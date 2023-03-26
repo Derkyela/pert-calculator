@@ -1,13 +1,16 @@
 <template>
   <div v-if="canShow">
-    <Component :is="settings.resultType"
-               :template="settings.template"
-               :list-type="settings.listType"
-               :activities="activities"
-               :total="total"
+    <Component
+      :is="settings.resultType"
+      :template="settings.template"
+      :list-type="settings.listType"
+      :activities="activities"
+      :total="total"
     />
   </div>
-  <p v-else>Please add an activity first.</p>
+  <p v-else>
+    Please add an activity first.
+  </p>
 </template>
 
 <script setup lang="ts">

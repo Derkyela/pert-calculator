@@ -1,5 +1,5 @@
 export type TypeActivityEvents =
-  'removeActivity'
+  'remove-activity'
   | 'update:title'
   | 'update:optimistic'
   | 'update:mostLikely'

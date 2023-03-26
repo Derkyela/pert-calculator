@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import { ActivityInterface } from '@/interfaces/Activity';
-import { Total } from '@/interfaces/Total';
+import type { ActivityInterface } from '@/interfaces/Activity';
+import type { Total } from '@/interfaces/Total';
 import { round } from '@/utils';
 
 interface State {

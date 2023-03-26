@@ -1,15 +1,22 @@
 import { fileURLToPath, URL } from 'node:url';
 
-import { defineConfig } from 'vite';
+import { defineConfig, type UserConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 
-// https://vitejs.dev/config/
-export default defineConfig({
+const config: UserConfig = {
   plugins: [vue()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  base: import.meta.env.NODE_ENV === 'production' ? '/pert-calculator/' : '/',
+};
+
+// https://vitejs.dev/config/
+export default defineConfig(({ command, mode, ssrBuild }) => {
+  if (command === 'build') {
+    config.base = '/pert-calculator';
+  }
+
+  return config;
 });

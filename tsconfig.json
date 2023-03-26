@@ -5,9 +5,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    },
-    "target": "ES2022"
+    }
   },
+
   "references": [
     {
       "path": "./tsconfig.node.json"

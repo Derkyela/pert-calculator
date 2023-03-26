@@ -1,10 +1,24 @@
 <template>
-  <ul class="drac-list drac-list-unordered my-4" v-if="showUnorderedList()">
-    <li v-for="activity in activities" :key="activity.id" v-html="getActivityString(activity)"></li>
+  <ul
+    v-if="showUnorderedList()"
+    class="drac-list drac-list-unordered my-4"
+  >
+    <li
+      v-for="activity in activities"
+      :key="activity.id"
+      v-html="getActivityString(activity)"
+    />
     <li>{{ getTotalString() }}</li>
   </ul>
-  <ol class="drac-list drac-list-ordered my-4" v-if="showOrderedList">
-    <li v-for="activity in activities" :key="activity.id" v-html="getActivityString(activity)"></li>
+  <ol
+    v-if="showOrderedList"
+    class="drac-list drac-list-ordered my-4"
+  >
+    <li
+      v-for="activity in activities"
+      :key="activity.id"
+      v-html="getActivityString(activity)"
+    />
     <li>{{ getTotalString() }}</li>
   </ol>
 </template>
@@ -12,8 +26,8 @@
 <script setup lang="ts">
 import { computed, defineProps } from 'vue';
 import { ListType } from '@/interfaces/Settings';
-import { ActivityInterface } from '@/interfaces/Activity';
-import { Total } from '@/interfaces/Total';
+import type { ActivityInterface } from '@/interfaces/Activity';
+import type { Total } from '@/interfaces/Total';
 import useSettingsStore from '@/stores/settings';
 
 const props = defineProps({
