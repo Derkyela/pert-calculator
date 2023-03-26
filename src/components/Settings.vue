@@ -153,7 +153,9 @@ import useSettingsStore from '@/stores/settings';
 import { ListType, ResultType, type SettingsInterface } from '@/interfaces/Settings';
 import { toNumber } from '@/utils';
 
-defineEmits(['set:standardDeviationOfTimeThreshold']);
+defineEmits<{
+  (e: 'set:standardDeviationOfTimeThreshold', standardDeviationOfTimeThreshold: number): void,
+}>();
 
 const settingsStore = useSettingsStore();
 

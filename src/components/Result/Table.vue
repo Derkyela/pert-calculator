@@ -88,17 +88,13 @@
 <script setup lang="ts">
 import { computed, defineProps } from 'vue';
 import useSettingsStore from '@/stores/settings';
+import type { ActivityInterface } from '@/interfaces/Activity';
+import type { Total } from '@/interfaces/Total';
 
-defineProps({
-  activities: {
-    type: Array,
-    required: true,
-  },
-  total: {
-    type: Array,
-    required: true,
-  },
-});
+defineProps<{
+  activities: ActivityInterface[],
+  total: Total,
+}>();
 
 const settingsStore = useSettingsStore();
 

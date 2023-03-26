@@ -28,5 +28,7 @@ module.exports = {
       'exports': 'always-multiline',
       'functions': 'always-multiline',
     }],
+    'vue/define-emits-declaration': 'error',
+    'vue/define-props-declaration': 'error',
   },
 }

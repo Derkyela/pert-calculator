@@ -13,7 +13,7 @@ const config: UserConfig = {
 };
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command, mode, ssrBuild }) => {
+export default defineConfig(({ command }) => {
   if (command === 'build') {
     config.base = '/pert-calculator';
   }

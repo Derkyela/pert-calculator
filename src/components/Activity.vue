@@ -113,55 +113,43 @@ import {
   defineEmits,
   defineProps,
   nextTick,
+  withDefaults,
 } from 'vue';
 import type { TypeActivityEvents } from '@/types';
 
 const STEP = 0.5;
 
-const props = defineProps({
-  activityId: {
-    type: Number,
-    default: 1,
-  },
-  title: {
-    type: String,
-    default: '',
-  },
-  optimistic: {
-    type: Number,
-    default: 0,
-  },
-  mostLikely: {
-    type: Number,
-    default: 0,
-  },
-  pessimistic: {
-    type: Number,
-    default: 0,
-  },
-  expectedTime: {
-    type: Number,
-    default: 0,
-  },
-  standardDeviationOfTime: {
-    type: Number,
-    default: 0,
-  },
-  canDelete: {
-    type: Boolean,
-    default: false,
-  },
+export interface Props {
+  activityId?: number,
+  title?: string,
+  optimistic?: number,
+  mostLikely?: number,
+  pessimistic?: number,
+  expectedTime?: number,
+  standardDeviationOfTime?: number,
+  canDelete?: boolean,
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  activityId: 1,
+  title: '',
+  optimistic: 0,
+  mostLikely: 0,
+  pessimistic: 0,
+  expectedTime: 0,
+  standardDeviationOfTime: 0,
+  canDelete: false,
 });
 
-const emit = defineEmits([
-  'remove-activity',
-  'update:title',
-  'update:optimistic',
-  'update:mostLikely',
-  'update:pessimistic',
-  'update:expectedTime',
-  'update:standardDeviationOfTime',
-]);
+const emit = defineEmits<{
+  (e: 'remove-activity', activityId: number): void,
+  (e: 'update:title', title: string): void,
+  (e: 'update:optimistic', optimistic: number): void,
+  (e: 'update:mostLikely', mostLikely: number): void,
+  (e: 'update:pessimistic', pessimistic: number): void,
+  (e: 'update:expectedTime', expectedTime: number): void,
+  (e: 'update:standardDeviationOfTime', standardDeviationOfTime: number): void,
+}>();
 
 const settingsStore = useSettingsStore();
 

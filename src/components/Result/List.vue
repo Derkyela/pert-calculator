@@ -1,6 +1,6 @@
 <template>
   <ul
-    v-if="showUnorderedList()"
+    v-if="showUnorderedList"
     class="drac-list drac-list-unordered my-4"
   >
     <li
@@ -30,36 +30,20 @@ import type { ActivityInterface } from '@/interfaces/Activity';
 import type { Total } from '@/interfaces/Total';
 import useSettingsStore from '@/stores/settings';
 
-const props = defineProps({
-  activities: {
-    type: Array,
-    required: true,
-  },
-  listType: {
-    type: String,
-    required: true,
-  },
-  template: {
-    type: String,
-    required: true,
-  },
-  total: {
-    type: Object,
-    required: true,
-  },
-});
+const props = defineProps<{
+  activities: ActivityInterface[],
+  listType: String,
+  template: String,
+  total: Total,
+}>();
 
 const settingsStore = useSettingsStore();
 
 const settings = computed(() => settingsStore.settings);
 
-function showUnorderedList(): boolean {
-  return props.listType === ListType.Unordered;
-}
+const showUnorderedList = computed(() => props.listType === ListType.Unordered);
 
-function showOrderedList(): boolean {
-  return props.listType === ListType.Ordered;
-}
+const showOrderedList = computed(() => props.listType === ListType.Ordered);
 
 function getActivityString(activity: ActivityInterface): string {
   let activityString = props.template;
