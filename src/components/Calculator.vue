@@ -1,22 +1,32 @@
 <template>
   <div class="hidden lg:grid lg:grid-cols-12 gap-2 lg:gap-4">
-    <div class="lg:col-span-5">Activity Title</div>
+    <div class="lg:col-span-5">
+      Activity Title
+    </div>
     <div>Optimistic Time</div>
     <div>Most Likely Time</div>
     <div>Pessimistic Time</div>
-    <div class="text-right">Expected Time</div>
-    <div class="col-span-2 text-right">Standard Deviation of Time</div>
+    <div class="text-right">
+      Expected Time
+    </div>
+    <div class="col-span-2 text-right">
+      Standard Deviation of Time
+    </div>
   </div>
-  <template v-for="activity in activities" :key="activity.id">
-    <Activity :activity-id="activity.id"
-              v-model:title="activity.title"
-              v-model:optimistic="activity.optimistic"
-              v-model:most-likely="activity.mostLikely"
-              v-model:pessimistic="activity.pessimistic"
-              v-model:expected-time="activity.expectedTime"
-              v-model:standard-deviation-of-time="activity.standardDeviationOfTime"
-              :canDelete="canDelete"
-              @removeActivity="removeActivity"
+  <template
+    v-for="activity in activities"
+    :key="activity.id"
+  >
+    <Activity
+      v-model:title="activity.title"
+      v-model:optimistic="activity.optimistic"
+      v-model:most-likely="activity.mostLikely"
+      v-model:pessimistic="activity.pessimistic"
+      v-model:expected-time="activity.expectedTime"
+      v-model:standard-deviation-of-time="activity.standardDeviationOfTime"
+      :activity-id="activity.id"
+      :can-delete="canDelete"
+      @remove-activity="removeActivity"
     />
   </template>
   <div class="flex flex-col lg:grid lg:grid-cols-12 lg:gap-4">
@@ -33,7 +43,11 @@
       <span class="lg:hidden">Total expected time: </span>{{ total.expectedTime }}
     </div>
     <div class="mt-4 lg:mt-0 lg:col-start-11 lg:col-span-2 text-right">
-      <button type="button" @click="add()" class="drac-btn drac-bg-green drac-text-black">
+      <button
+        type="button"
+        class="drac-btn drac-bg-green drac-text-black"
+        @click="add()"
+      >
         Add Activity
       </button>
     </div>

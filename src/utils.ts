@@ -1,4 +1,4 @@
-import { ActivityInterface } from '@/interfaces/Activity';
+import type { ActivityInterface } from '@/interfaces/Activity';
 
 export function round(val: number): number {
   return Math.round(val * 100) / 100;

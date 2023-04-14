@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ListType, ResultType, SettingsInterface } from '@/interfaces/Settings';
+import { ListType, ResultType, type SettingsInterface } from '@/interfaces/Settings';
 
 interface State {
   settings: SettingsInterface

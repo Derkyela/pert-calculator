@@ -1,3 +1,4 @@
+import './assets/index.css';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import App from './App.vue';
@@ -7,6 +8,8 @@ import List from './components/Result/List.vue';
 const pinia = createPinia();
 const app = createApp(App);
 
+// TODO: Rename component
+// eslint-disable-next-line vue/no-reserved-component-names
 app.component('Table', Table);
 app.component('List', List);
 

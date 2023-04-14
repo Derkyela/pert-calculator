@@ -1,84 +1,104 @@
 <template>
-  <div class="flex flex-col border rounded-lg drac-border-grey p-2
-              lg:border-0 lg:p-0 lg:grid lg:grid-cols-12 gap-4">
+  <div
+    class="flex flex-col border rounded-lg drac-border-grey p-2
+              lg:border-0 lg:p-0 lg:grid lg:grid-cols-12 gap-4"
+  >
     <div class="col-span-5 ">
-      <label :for="`title_${activityId}`" class="lg:hidden">Title</label>
-      <input type="text"
-             :id="`title_${activityId}`"
-             :value="title"
-             :placeholder="titlePlaceholder"
-             @input="emit('update:title', $event.target.value);"
-             @focus="$event.target.select()"
-             aria-label="Activity Title"
-             class="drac-input drac-input-white"
-             :class="[{
-           'drac-text-white': !markHighStandardDeviationOfTime,
-           'drac-text-red': markHighStandardDeviationOfTime
-       }]"
-      />
+      <label
+        :for="`title_${activityId}`"
+        class="lg:hidden"
+      >Title</label>
+      <input
+        :id="`title_${activityId}`"
+        type="text"
+        :value="title"
+        :placeholder="titlePlaceholder"
+        aria-label="Activity Title"
+        class="drac-input drac-input-white"
+        :class="[{
+          'drac-text-white': !markHighStandardDeviationOfTime,
+          'drac-text-red': markHighStandardDeviationOfTime,
+        }]"
+        @input="$emit('update:title', ($event.target as HTMLInputElement).value);"
+        @focus="($event.target as HTMLInputElement).select()"
+      >
     </div>
     <div>
-      <label :for="`optimistic_${activityId}`" class="lg:hidden">Optimistic:</label>
-      <input :value="optimistic"
-             :id="`optimistic_${activityId}`"
-             @input="emit('update:optimistic', toNumber($event.target.value));
-          $nextTick(() => updateCalculatedValues())"
-             @focus="$event.target.select()"
-             @keydown.up="increment($event, 'update:optimistic')"
-             @keydown.down="decrement($event, 'update:optimistic')"
-             aria-label="Optimistic time"
-             class="drac-input drac-input-white"
-             :class="[{
-           'drac-text-white': !markHighStandardDeviationOfTime,
-           'drac-text-red': markHighStandardDeviationOfTime
-       }]"
-      />
+      <label
+        :for="`optimistic_${activityId}`"
+        class="lg:hidden"
+      >Optimistic:</label>
+      <input
+        :id="`optimistic_${activityId}`"
+        :value="optimistic"
+        aria-label="Optimistic time"
+        class="drac-input drac-input-white"
+        :class="[{
+          'drac-text-white': !markHighStandardDeviationOfTime,
+          'drac-text-red': markHighStandardDeviationOfTime,
+        }]"
+        @input="emit('update:optimistic', toNumber(($event.target as HTMLInputElement).value));
+                recalculate()"
+        @focus="($event.target as HTMLInputElement).select()"
+        @keydown.up="$emit('update:optimistic', increment($event)); recalculate();"
+        @keydown.down="$emit('update:optimistic', decrement($event)); recalculate();"
+      >
     </div>
     <div>
-      <label :for="`mostLikely_${activityId}`" class="lg:hidden">Most Likely:</label>
-      <input :value="mostLikely"
-             :id="`mostLikely_${activityId}`"
-             @input="emit('update:mostLikely', toNumber($event.target.value));
-          $nextTick(() => updateCalculatedValues())"
-             @focus="$event.target.select()"
-             @keydown.up="increment($event, 'update:mostLikely')"
-             @keydown.down="decrement($event, 'update:mostLikely')"
-             aria-label="Most likely time"
-             class="drac-input drac-input-white drac-text-white"
-      />
+      <label
+        :for="`mostLikely_${activityId}`"
+        class="lg:hidden"
+      >Most Likely:</label>
+      <input
+        :id="`mostLikely_${activityId}`"
+        :value="mostLikely"
+        aria-label="Most likely time"
+        class="drac-input drac-input-white drac-text-white"
+        @input="emit('update:mostLikely', toNumber(($event.target as HTMLInputElement).value));
+                recalculate()"
+        @focus="($event.target as HTMLInputElement).select()"
+        @keydown.up="$emit('update:mostLikely', increment($event)); recalculate();"
+        @keydown.down="$emit('update:mostLikely', decrement($event)); recalculate();"
+      >
     </div>
     <div>
-      <label :for="`pessimistic_${activityId}`" class="lg:hidden">Pessimistic:</label>
-      <input :value="pessimistic"
-             :id="`pessimistic_${activityId}`"
-             @input="emit('update:pessimistic', toNumber($event.target.value));
-          $nextTick(() => updateCalculatedValues())"
-             @focus="$event.target.select()"
-             @keydown.up="increment($event, 'update:pessimistic')"
-             @keydown.down="decrement($event, 'update:pessimistic')"
-             aria-label="Pessimistic time"
-             class="drac-input drac-input-white"
-             :class="[{
-           'drac-text-white': !markHighStandardDeviationOfTime,
-           'drac-text-red': markHighStandardDeviationOfTime
-       }]"
-      />
+      <label
+        :for="`pessimistic_${activityId}`"
+        class="lg:hidden"
+      >Pessimistic:</label>
+      <input
+        :id="`pessimistic_${activityId}`"
+        :value="pessimistic"
+        aria-label="Pessimistic time"
+        class="drac-input drac-input-white"
+        :class="[{
+          'drac-text-white': !markHighStandardDeviationOfTime,
+          'drac-text-red': markHighStandardDeviationOfTime,
+        }]"
+        @input="emit('update:pessimistic', toNumber(($event.target as HTMLInputElement).value));
+                recalculate();"
+        @focus="($event.target as HTMLInputElement).select()"
+        @keydown.up="$emit('update:pessimistic', increment($event)); recalculate();"
+        @keydown.down="$emit('update:pessimistic', decrement($event)); recalculate();"
+      >
     </div>
     <div class="hidden lg:block py-2 drac-text-white drac-text-semibold drac-text-right">
       {{ expectedTime }}
     </div>
-    <div class="hidden lg:block col-span-2 py-2 drac-text-right"
-         :class="[{
-         'drac-text-white': !markHighStandardDeviationOfTime,
-         'drac-text-red': markHighStandardDeviationOfTime
-       }]"
+    <div
+      class="hidden lg:block col-span-2 py-2 drac-text-right"
+      :class="[{
+        'drac-text-white': !markHighStandardDeviationOfTime,
+        'drac-text-red': markHighStandardDeviationOfTime,
+      }]"
     >
       {{ standardDeviationOfTime }}
     </div>
-    <button type="button"
-            @click="emit('removeActivity', activityId)"
-            v-if="canDelete"
-            class="col-start-12 drac-btn drac-bg-red drac-text-black"
+    <button
+      v-if="canDelete"
+      type="button"
+      class="col-start-12 drac-btn drac-bg-red drac-text-black"
+      @click="$emit('remove-activity', activityId ?? 1)"
     >
       Remove
     </button>
@@ -93,55 +113,42 @@ import {
   defineEmits,
   defineProps,
   nextTick,
+  withDefaults,
 } from 'vue';
-import type { TypeActivityEvents } from '@/types';
 
 const STEP = 0.5;
 
-const props = defineProps({
-  activityId: {
-    type: Number,
-    default: 1,
-  },
-  title: {
-    type: String,
-    default: '',
-  },
-  optimistic: {
-    type: Number,
-    default: 0,
-  },
-  mostLikely: {
-    type: Number,
-    default: 0,
-  },
-  pessimistic: {
-    type: Number,
-    default: 0,
-  },
-  expectedTime: {
-    type: Number,
-    default: 0,
-  },
-  standardDeviationOfTime: {
-    type: Number,
-    default: 0,
-  },
-  canDelete: {
-    type: Boolean,
-    default: false,
-  },
+interface Props {
+  activityId?: number,
+  title?: string,
+  optimistic?: number,
+  mostLikely?: number,
+  pessimistic?: number,
+  expectedTime?: number,
+  standardDeviationOfTime?: number,
+  canDelete?: boolean,
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  activityId: 1,
+  title: '',
+  optimistic: 0,
+  mostLikely: 0,
+  pessimistic: 0,
+  expectedTime: 0,
+  standardDeviationOfTime: 0,
+  canDelete: false,
 });
 
-const emit = defineEmits([
-  'removeActivity',
-  'update:title',
-  'update:optimistic',
-  'update:mostLikely',
-  'update:pessimistic',
-  'update:expectedTime',
-  'update:standardDeviationOfTime',
-]);
+const emit = defineEmits<{
+  (e: 'remove-activity', activityId: number): void,
+  (e: 'update:title', title: string): void,
+  (e: 'update:optimistic', optimistic: number): void,
+  (e: 'update:mostLikely', mostLikely: number): void,
+  (e: 'update:pessimistic', pessimistic: number): void,
+  (e: 'update:expectedTime', expectedTime: number): void,
+  (e: 'update:standardDeviationOfTime', standardDeviationOfTime: number): void,
+}>();
 
 const settingsStore = useSettingsStore();
 
@@ -166,23 +173,23 @@ function calcStandardDeviationOfTime(): void {
   emit('update:standardDeviationOfTime', round(standardDeviationOfTime));
 }
 
-function updateCalculatedValues(): void {
-  calcExpectedTime();
-  calcStandardDeviationOfTime();
+function recalculate(): void {
+  nextTick(() => {
+    calcExpectedTime();
+    calcStandardDeviationOfTime();
+  });
 }
 
-function increment(event: Event, emitName: TypeActivityEvents): void {
+function increment(event: Event): number {
   const element = event.target as HTMLInputElement;
 
-  emit(emitName, toNumber(element.value) + STEP);
-  nextTick(() => calcExpectedTime());
+  return toNumber(element.value) + STEP
 }
 
-function decrement(event: Event, emitName: TypeActivityEvents): void {
+function decrement(event: Event): number {
   const element = event.target as HTMLInputElement;
 
-  emit(emitName, toNumber(element.value) - STEP);
-  nextTick(() => calcExpectedTime());
+  return toNumber(element.value) - STEP;
 }
 
 const markHighStandardDeviationOfTime = computed(() => {

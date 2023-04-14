@@ -7,12 +7,12 @@ npm install
 
 ### Compiles and hot-reloads for development
 ```
-npm run serve
+npm run dev
 ```
 
 ### Compiles and minifies for production
 ```
-npm run build
+npm run build-only
 ```
 
 ### Lints and fixes files
@@ -20,5 +20,7 @@ npm run build
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Type check
+```
+npm run type-check
+```

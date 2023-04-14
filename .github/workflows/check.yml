@@ -1,0 +1,29 @@
+name: Lint and type check app
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+
+    - name: Install
+      run: npm install
+
+    - name: Lint
+      run: npm run lint
+
+    - name: Type-check
+      run: npm run type-check
+
+    - name: Build
+      run: npm run build-only

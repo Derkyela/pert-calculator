@@ -1,10 +1,24 @@
 <template>
-  <ul class="drac-list drac-list-unordered my-4" v-if="showUnorderedList()">
-    <li v-for="activity in activities" :key="activity.id" v-html="getActivityString(activity)"></li>
+  <ul
+    v-if="showUnorderedList"
+    class="drac-list drac-list-unordered my-4"
+  >
+    <li
+      v-for="activity in activities"
+      :key="activity.id"
+      v-html="getActivityString(activity)"
+    />
     <li>{{ getTotalString() }}</li>
   </ul>
-  <ol class="drac-list drac-list-ordered my-4" v-if="showOrderedList">
-    <li v-for="activity in activities" :key="activity.id" v-html="getActivityString(activity)"></li>
+  <ol
+    v-if="showOrderedList"
+    class="drac-list drac-list-ordered my-4"
+  >
+    <li
+      v-for="activity in activities"
+      :key="activity.id"
+      v-html="getActivityString(activity)"
+    />
     <li>{{ getTotalString() }}</li>
   </ol>
 </template>
@@ -12,40 +26,24 @@
 <script setup lang="ts">
 import { computed, defineProps } from 'vue';
 import { ListType } from '@/interfaces/Settings';
-import { ActivityInterface } from '@/interfaces/Activity';
-import { Total } from '@/interfaces/Total';
+import type { ActivityInterface } from '@/interfaces/Activity';
+import type { Total } from '@/interfaces/Total';
 import useSettingsStore from '@/stores/settings';
 
-const props = defineProps({
-  activities: {
-    type: Array,
-    required: true,
-  },
-  listType: {
-    type: String,
-    required: true,
-  },
-  template: {
-    type: String,
-    required: true,
-  },
-  total: {
-    type: Object,
-    required: true,
-  },
-});
+const props = defineProps<{
+  activities: ActivityInterface[],
+  listType: string,
+  template: string,
+  total: Total,
+}>();
 
 const settingsStore = useSettingsStore();
 
 const settings = computed(() => settingsStore.settings);
 
-function showUnorderedList(): boolean {
-  return props.listType === ListType.Unordered;
-}
+const showUnorderedList = computed(() => props.listType === ListType.Unordered);
 
-function showOrderedList(): boolean {
-  return props.listType === ListType.Ordered;
-}
+const showOrderedList = computed(() => props.listType === ListType.Ordered);
 
 function getActivityString(activity: ActivityInterface): string {
   let activityString = props.template;
