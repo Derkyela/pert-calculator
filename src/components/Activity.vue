@@ -19,8 +19,8 @@
           'drac-text-white': !markHighStandardDeviationOfTime,
           'drac-text-red': markHighStandardDeviationOfTime,
         }]"
-        @input="emit('update:title', $event.target.value);"
-        @focus="$event.target.select()"
+        @input="$emit('update:title', ($event.target as HTMLInputElement).value);"
+        @focus="($event.target as HTMLInputElement).select()"
       >
     </div>
     <div>
@@ -37,11 +37,11 @@
           'drac-text-white': !markHighStandardDeviationOfTime,
           'drac-text-red': markHighStandardDeviationOfTime,
         }]"
-        @input="emit('update:optimistic', toNumber($event.target.value));
-                $nextTick(() => updateCalculatedValues())"
-        @focus="$event.target.select()"
-        @keydown.up="increment($event, 'update:optimistic')"
-        @keydown.down="decrement($event, 'update:optimistic')"
+        @input="emit('update:optimistic', toNumber(($event.target as HTMLInputElement).value));
+                recalculate()"
+        @focus="($event.target as HTMLInputElement).select()"
+        @keydown.up="$emit('update:optimistic', increment($event)); recalculate();"
+        @keydown.down="$emit('update:optimistic', decrement($event)); recalculate();"
       >
     </div>
     <div>
@@ -54,11 +54,11 @@
         :value="mostLikely"
         aria-label="Most likely time"
         class="drac-input drac-input-white drac-text-white"
-        @input="emit('update:mostLikely', toNumber($event.target.value));
-                $nextTick(() => updateCalculatedValues())"
-        @focus="$event.target.select()"
-        @keydown.up="increment($event, 'update:mostLikely')"
-        @keydown.down="decrement($event, 'update:mostLikely')"
+        @input="emit('update:mostLikely', toNumber(($event.target as HTMLInputElement).value));
+                recalculate()"
+        @focus="($event.target as HTMLInputElement).select()"
+        @keydown.up="$emit('update:mostLikely', increment($event)); recalculate();"
+        @keydown.down="$emit('update:mostLikely', decrement($event)); recalculate();"
       >
     </div>
     <div>
@@ -75,11 +75,11 @@
           'drac-text-white': !markHighStandardDeviationOfTime,
           'drac-text-red': markHighStandardDeviationOfTime,
         }]"
-        @input="emit('update:pessimistic', toNumber($event.target.value));
-                $nextTick(() => updateCalculatedValues())"
-        @focus="$event.target.select()"
-        @keydown.up="increment($event, 'update:pessimistic')"
-        @keydown.down="decrement($event, 'update:pessimistic')"
+        @input="emit('update:pessimistic', toNumber(($event.target as HTMLInputElement).value));
+                recalculate();"
+        @focus="($event.target as HTMLInputElement).select()"
+        @keydown.up="$emit('update:pessimistic', increment($event)); recalculate();"
+        @keydown.down="$emit('update:pessimistic', decrement($event)); recalculate();"
       >
     </div>
     <div class="hidden lg:block py-2 drac-text-white drac-text-semibold drac-text-right">
@@ -98,7 +98,7 @@
       v-if="canDelete"
       type="button"
       class="col-start-12 drac-btn drac-bg-red drac-text-black"
-      @click="emit('remove-activity', activityId)"
+      @click="$emit('remove-activity', activityId ?? 1)"
     >
       Remove
     </button>
@@ -115,11 +115,10 @@ import {
   nextTick,
   withDefaults,
 } from 'vue';
-import type { TypeActivityEvents } from '@/types';
 
 const STEP = 0.5;
 
-export interface Props {
+interface Props {
   activityId?: number,
   title?: string,
   optimistic?: number,
@@ -174,23 +173,23 @@ function calcStandardDeviationOfTime(): void {
   emit('update:standardDeviationOfTime', round(standardDeviationOfTime));
 }
 
-function updateCalculatedValues(): void {
-  calcExpectedTime();
-  calcStandardDeviationOfTime();
+function recalculate(): void {
+  nextTick(() => {
+    calcExpectedTime();
+    calcStandardDeviationOfTime();
+  });
 }
 
-function increment(event: Event, emitName: TypeActivityEvents): void {
+function increment(event: Event): number {
   const element = event.target as HTMLInputElement;
 
-  emit(emitName, toNumber(element.value) + STEP);
-  nextTick(() => calcExpectedTime());
+  return toNumber(element.value) + STEP
 }
 
-function decrement(event: Event, emitName: TypeActivityEvents): void {
+function decrement(event: Event): number {
   const element = event.target as HTMLInputElement;
 
-  emit(emitName, toNumber(element.value) - STEP);
-  nextTick(() => calcExpectedTime());
+  return toNumber(element.value) - STEP;
 }
 
 const markHighStandardDeviationOfTime = computed(() => {

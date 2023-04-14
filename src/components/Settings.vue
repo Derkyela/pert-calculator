@@ -31,7 +31,7 @@
       </div>
     </div>
     <div
-      v-if="resultTypeIsList"
+      v-if="resultTypeIsList()"
       class="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4"
     >
       <label for="listType">List Type</label>
@@ -63,7 +63,7 @@
         </div>
       </div>
     </div>
-    <div v-if="resultTypeIsList">
+    <div v-if="resultTypeIsList()">
       <div class="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
         <label for="template">Template</label>
         <input
@@ -101,8 +101,8 @@
           :value="settings.standardDeviationOfTimeThreshold"
           class="drac-input drac-input-white drac-text-white"
           @input="settings.standardDeviationOfTimeThreshold
-            = convertToNumber($event.target.value)"
-          @focus="$event.target.select()"
+            = convertToNumber(($event.target as HTMLInputElement).value)"
+          @focus="($event.target as HTMLInputElement).select()"
         >
       </div>
     </div>

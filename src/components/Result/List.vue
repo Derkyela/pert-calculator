@@ -32,8 +32,8 @@ import useSettingsStore from '@/stores/settings';
 
 const props = defineProps<{
   activities: ActivityInterface[],
-  listType: String,
-  template: String,
+  listType: string,
+  template: string,
   total: Total,
 }>();
 

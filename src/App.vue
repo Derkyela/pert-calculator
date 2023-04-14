@@ -62,12 +62,13 @@
     </div>
   </nav>
   <main class="flex flex-col gap-4 py-4">
-    <Component :is="tabs[currentTab]" />
+    <Component :is="tabs[currentTab as keyof Tabs]" />
   </main>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import type { Component } from 'vue';
 import Result from '@/components/Result.vue';
 import Settings from '@/components/Settings.vue';
 import useActivitiesStore from '@/stores/activities';
@@ -76,10 +77,16 @@ import { isActivity } from '@/utils';
 import type { ActivityInterface } from '@/interfaces/Activity';
 import Calculator from './components/Calculator.vue';
 
-const tabs = {
-  Calculator,
-  Result,
-  Settings,
+interface Tabs {
+  Calculator: Component,
+  Result: Component,
+  Settings: Component,
+}
+
+const tabs: Tabs = {
+  Calculator: Calculator,
+  Result: Result,
+  Settings: Settings,
 };
 const currentTab = ref('Calculator');
 
