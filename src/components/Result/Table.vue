@@ -34,7 +34,12 @@
               'drac-text-red': markHighStandardDeviationOfTime(activity.standardDeviationOfTime),
             }]"
           >
-            {{ activity.title }}
+            <template v-if="markHighStandardDeviationOfTime(activity.standardDeviationOfTime)">
+              <strong>!{{ activity.title }}</strong>
+            </template>
+            <template v-else>
+              {{ activity.title }}
+            </template>
           </td>
           <td
             :class="[{
@@ -42,7 +47,12 @@
               'drac-text-red': markHighStandardDeviationOfTime(activity.standardDeviationOfTime),
             }]"
           >
-            {{ activity.optimistic }}
+            <template v-if="markHighStandardDeviationOfTime(activity.standardDeviationOfTime)">
+              <strong>!{{ activity.optimistic }}</strong>
+            </template>
+            <template v-else>
+              {{ activity.optimistic }}
+            </template>
           </td>
           <td>{{ activity.mostLikely }}</td>
           <td
@@ -51,7 +61,12 @@
               'drac-text-red': markHighStandardDeviationOfTime(activity.standardDeviationOfTime),
             }]"
           >
-            {{ activity.pessimistic }}
+            <template v-if="markHighStandardDeviationOfTime(activity.standardDeviationOfTime)">
+              <strong>!{{ activity.pessimistic }}</strong>
+            </template>
+            <template v-else>
+              {{ activity.pessimistic }}
+            </template>
           </td>
           <td>{{ activity.expectedTime }}</td>
           <td
@@ -60,7 +75,12 @@
               'drac-text-red': markHighStandardDeviationOfTime(activity.standardDeviationOfTime),
             }]"
           >
-            {{ activity.standardDeviationOfTime }}
+            <template v-if="markHighStandardDeviationOfTime(activity.standardDeviationOfTime)">
+              <strong>!{{ activity.standardDeviationOfTime }}</strong>
+            </template>
+            <template v-else>
+              {{ activity.standardDeviationOfTime }}
+            </template>
           </td>
         </tr>
       </tbody>
