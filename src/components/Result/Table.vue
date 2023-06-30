@@ -34,12 +34,7 @@
               'drac-text-red': markHighStandardDeviationOfTime(activity.standardDeviationOfTime),
             }]"
           >
-            <template v-if="markHighStandardDeviationOfTime(activity.standardDeviationOfTime)">
-              <strong>!{{ activity.title }}</strong>
-            </template>
-            <template v-else>
-              {{ activity.title }}
-            </template>
+            {{ activity.title }}
           </td>
           <td
             :class="[{
@@ -47,12 +42,7 @@
               'drac-text-red': markHighStandardDeviationOfTime(activity.standardDeviationOfTime),
             }]"
           >
-            <template v-if="markHighStandardDeviationOfTime(activity.standardDeviationOfTime)">
-              <strong>!{{ activity.optimistic }}</strong>
-            </template>
-            <template v-else>
-              {{ activity.optimistic }}
-            </template>
+            {{ activity.optimistic }}
           </td>
           <td>{{ activity.mostLikely }}</td>
           <td
@@ -61,12 +51,7 @@
               'drac-text-red': markHighStandardDeviationOfTime(activity.standardDeviationOfTime),
             }]"
           >
-            <template v-if="markHighStandardDeviationOfTime(activity.standardDeviationOfTime)">
-              <strong>!{{ activity.pessimistic }}</strong>
-            </template>
-            <template v-else>
-              {{ activity.pessimistic }}
-            </template>
+            {{ activity.pessimistic }}
           </td>
           <td>{{ activity.expectedTime }}</td>
           <td
@@ -76,7 +61,7 @@
             }]"
           >
             <template v-if="markHighStandardDeviationOfTime(activity.standardDeviationOfTime)">
-              <strong>!{{ activity.standardDeviationOfTime }}</strong>
+              <strong>{{ activity.standardDeviationOfTime }} !</strong>
             </template>
             <template v-else>
               {{ activity.standardDeviationOfTime }}
