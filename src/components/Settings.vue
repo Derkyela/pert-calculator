@@ -78,7 +78,7 @@
       </div>
     </div>
     <div class="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
-      <label for="markHighStandardDeviationOfTime">Mark Hight Standard Deviation of Time</label>
+      <label for="markHighStandardDeviationOfTime">Mark High Standard Deviation of Time</label>
       <input
         id="markHighStandardDeviationOfTime"
         v-model="settings.markHighStandardDeviationOfTime"
