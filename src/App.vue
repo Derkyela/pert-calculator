@@ -31,19 +31,7 @@
       </li>
     </ul>
     <div class="flex gap-4">
-      <label
-        for="activitiesFile"
-        class="drac-btn drac-border-green drac-btn-outline drac-text-green"
-      >
-        Import Activities
-      </label>
-      <input
-        id="activitiesFile"
-        type="file"
-        class="hidden"
-        accept="application/json"
-        @change="importActivities($event)"
-      >
+      <Import />
       <a
         :href="getActivitiesExportString()"
         download="activities.json"
@@ -73,9 +61,8 @@ import Result from '@/components/Result.vue';
 import Settings from '@/components/Settings.vue';
 import useActivitiesStore from '@/stores/activities';
 import useSettingsStore from '@/stores/settings';
-import { isActivity } from '@/utils';
-import type { ActivityInterface } from '@/interfaces/Activity';
 import Calculator from './components/Calculator.vue';
+import Import from "@/components/Import.vue";
 
 interface Tabs {
   Calculator: Component,
@@ -100,55 +87,6 @@ if (settings !== null) {
 const activities = localStorage.getItem('activities');
 if (activities !== null) {
   activitiesStore.$patch(JSON.parse(activities));
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isValidActivityArray(array: Array<any>): boolean {
-  let valid = true;
-
-  array.forEach((value, index) => {
-    if (!isActivity(value)) {
-      valid = false;
-      console.error(`Value at index ${index} is not an activity object.`);
-    }
-  });
-
-  return valid;
-}
-
-function getHighestActivityId(array: Array<ActivityInterface>): number {
-  return array.reduce(
-    (highestId, activity) => (activity.id > highestId ? activity.id : highestId),
-    1,
-  );
-}
-
-function importActivities(event: Event): void {
-  const element = event.currentTarget as HTMLInputElement;
-  const file = element.files?.item(0);
-  if (!file) {
-    return;
-  }
-
-  const reader = new FileReader();
-
-  reader.addEventListener('load', () => {
-    const json = JSON.parse(reader.result as string);
-    if (!Array.isArray(json) || !isValidActivityArray(json)) {
-      console.error(`File ${file.name} contains invalid data. File must contain an json array of activities.`);
-      return;
-    }
-    activitiesStore.$patch({
-      activityId: getHighestActivityId(json),
-      activities: json,
-    });
-  });
-
-  reader.addEventListener('error', () => {
-    console.error(`Error occurred reading file: ${file.name}`);
-  });
-
-  reader.readAsText(file);
 }
 
 function getActivitiesExportString() {
