@@ -12,7 +12,7 @@
       class="duration-100"
     >
       <div
-        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/3 h-1/3 flex flex-col drac-bg-black-secondary rounded-lg z-20"
+        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-[1/3] max-h-[1/3] flex flex-col drac-bg-black-secondary rounded-lg z-20"
       >
         <slot name="header">
           <div>
