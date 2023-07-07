@@ -12,6 +12,8 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@vueuse/components": "^10.2.1",
+    "@vueuse/core": "^10.2.1",
     "dracula-ui": "^1.0.6",
     "pinia": "^2.0.30",
     "vue": "^3.2.13"
