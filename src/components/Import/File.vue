@@ -17,14 +17,21 @@
 <script setup lang="ts">
 import useActivitiesStore from '@/stores/activities';
 import { isActivity, getHighestActivityId } from '@/utils';
-import { defineEmits } from 'vue';
+import { defineEmits, ref } from 'vue';
+import { get } from '@vueuse/core';
 
 const emit = defineEmits<{
   (e: 'import-success'): void,
-  (e: 'import-error'): void,
+  (e: 'import-failure', errors: Array<string>): void,
 }>();
 
 const activitiesStore = useActivitiesStore();
+
+const errors = ref<Array<string>>([]);
+
+function addError(message: string): void {
+  errors.value.push(message);
+}
 
 function importActivities(event: Event): void {
   const element = event.currentTarget as HTMLInputElement;
@@ -38,7 +45,10 @@ function importActivities(event: Event): void {
   reader.addEventListener('load', () => {
     const json = JSON.parse(reader.result as string);
     if (!Array.isArray(json) || !isValidActivityArray(json)) {
-      console.error(`File ${file.name} contains invalid data. File must contain an json array of activities.`);
+      const errorMessage = `File ${file.name} contains invalid data. File must contain an json array of activities.`;
+      console.error(errorMessage);
+      addError(errorMessage);
+      emit('import-failure', get(errors));
       return;
     }
     activitiesStore.$patch({
@@ -49,7 +59,10 @@ function importActivities(event: Event): void {
   });
 
   reader.addEventListener('error', () => {
-    console.error(`Error occurred reading file: ${file.name}`);
+    const errorMessage = `Error occurred reading file: ${file.name}`;
+    console.error(errorMessage);
+    addError(errorMessage)
+    emit('import-failure', get(errors));
   });
 
   reader.readAsText(file);
@@ -62,7 +75,9 @@ function isValidActivityArray(array: Array<any>): boolean {
   array.forEach((value, index) => {
     if (!isActivity(value)) {
       valid = false;
-      console.error(`Value at index ${index} is not an activity object.`);
+      const errorMessage = `Value at index ${index} is not an activity object.`;
+      console.error(errorMessage);
+      addError(errorMessage);
     }
   });
 
