@@ -1,6 +1,9 @@
 <template>
   <div class="overflow-x-auto lg:overflow-visible">
-    <table class="drac-table">
+    <table
+      ref="html"
+      class="drac-table"
+    >
       <thead>
         <tr>
           <th class="pr-4 lg:pr-0">
@@ -91,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps } from 'vue';
+import { computed, defineExpose, defineProps, ref } from 'vue';
 import useSettingsStore from '@/stores/settings';
 import type { ActivityInterface } from '@/interfaces/Activity';
 import type { Total } from '@/interfaces/Total';
@@ -101,9 +104,13 @@ defineProps<{
   total: Total,
 }>();
 
+const html = ref(null);
+
 const settingsStore = useSettingsStore();
 
 const settings = computed(() => settingsStore.settings);
+
+defineExpose({html});
 
 function markHighStandardDeviationOfTime(standardDeviationOfTime: number): boolean {
   if (!settings.value.markHighStandardDeviationOfTime) {

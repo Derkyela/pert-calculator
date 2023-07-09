@@ -2,6 +2,8 @@ name: Lint and type check app
 
 on:
   push:
+    branches:
+      - main
   pull_request:
 
 jobs:

@@ -107,7 +107,7 @@
 
 <script setup lang="ts">
 import useSettingsStore from '@/stores/settings';
-import { round, toNumber } from '@/utils';
+import { round, toNumber, calcExpectedTime, calcStandardDeviationOfTime } from '@/utils';
 import {
   computed,
   defineEmits,
@@ -155,28 +155,28 @@ const settingsStore = useSettingsStore();
 const settings = computed(() => settingsStore.settings);
 const titlePlaceholder = computed(() => `Activity ${props.activityId}`);
 
-function calcExpectedTime(): void {
+function getExpectedTime(): void {
   if (props.mostLikely === 0 && props.pessimistic === 0) {
     return;
   }
 
-  const expectedTime = (props.optimistic + 4 * props.mostLikely + props.pessimistic) / 6;
+  const expectedTime = calcExpectedTime(props.optimistic, props.mostLikely, props.pessimistic);
   emit('update:expectedTime', round(expectedTime));
 }
 
-function calcStandardDeviationOfTime(): void {
+function getStandardDeviationOfTime(): void {
   if (props.pessimistic === 0) {
     return;
   }
 
-  const standardDeviationOfTime = (props.pessimistic - props.optimistic) / 6;
+  const standardDeviationOfTime = calcStandardDeviationOfTime(props.pessimistic, props.optimistic);
   emit('update:standardDeviationOfTime', round(standardDeviationOfTime));
 }
 
 function recalculate(): void {
   nextTick(() => {
-    calcExpectedTime();
-    calcStandardDeviationOfTime();
+    getExpectedTime();
+    getStandardDeviationOfTime();
   });
 }
 
