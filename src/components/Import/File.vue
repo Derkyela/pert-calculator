@@ -16,8 +16,7 @@
 
 <script setup lang="ts">
 import useActivitiesStore from '@/stores/activities';
-import { isActivity } from '@/utils';
-import type { ActivityInterface } from '@/interfaces/Activity';
+import { isActivity, getHighestActivityId } from '@/utils';
 import { defineEmits } from 'vue';
 
 const emit = defineEmits<{
@@ -68,12 +67,5 @@ function isValidActivityArray(array: Array<any>): boolean {
   });
 
   return valid;
-}
-
-function getHighestActivityId(array: Array<ActivityInterface>): number {
-  return array.reduce(
-    (highestId, activity) => (activity.id > highestId ? activity.id : highestId),
-    1,
-  );
 }
 </script>

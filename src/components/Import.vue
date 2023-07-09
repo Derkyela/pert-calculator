@@ -19,6 +19,10 @@
       <template #body>
         <div class="p-6 self-center flex-grow flex gap-4">
           <File @import-success="showImportModal = false" />
+          <Clipboard
+            @import-success="handleSuccess"
+            @import-failure="handleFailure"
+          />
         </div>
       </template>
       <template #footer>
@@ -41,6 +45,16 @@
 import { ref } from "vue";
 import Modal from "@/components/Modal.vue";
 import File from "@/components/Import/File.vue";
+import Clipboard from "@/components/Import/Clipboard.vue";
+import { set } from '@vueuse/core';
 
 const showImportModal = ref(false);
+
+function handleSuccess(warnings: Array<string>): void {
+  set(showImportModal, false);
+}
+
+function handleFailure(errors: Array<string>): void {
+  set(showImportModal, false);
+}
 </script>
