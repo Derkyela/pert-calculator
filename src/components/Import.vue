@@ -41,7 +41,7 @@
   </Teleport>
   <Message
     v-for="(message, index) in messages"
-    :key="message"
+    :key="message.symbol"
     :message="message.message"
     :type="message.type"
     @close="removeMessage(index)"
@@ -59,16 +59,18 @@ import Message from '@/components/Notification/Message.vue';
 
 const showImportModal = ref(false);
 
-const messages = ref<Array<{ message: string, type: MessageType }>>([]);
+const messages = ref<Array<{ message: string, type: MessageType, symbol: symbol }>>([]);
 
 function handleSuccess(warnings: Array<string> = []): void {
-  warnings.forEach((message) => messages.value.push({message: message, type: MessageType.WARNING}));
-  messages.value.push({message: 'Successfully imported activities.', type: MessageType.SUCCESS});
+  warnings.forEach((message) => messages.value.push({message: message, type: MessageType.WARNING, symbol: Symbol(message)}));
+  const successMessage = 'Successfully imported activities.';
+  const message = {message: successMessage, type: MessageType.SUCCESS, symbol: Symbol(successMessage)};
+  messages.value.push(message);
   set(showImportModal, false);
 }
 
 function handleFailure(errors: Array<string>): void {
-  errors.forEach((error) => messages.value.push({message: error, type: MessageType.ERROR}));
+  errors.forEach((error) => messages.value.push({message: error, type: MessageType.ERROR, symbol: Symbol(error)}));
   set(showImportModal, false);
 }
 
