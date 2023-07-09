@@ -18,7 +18,7 @@
       </template>
       <template #body>
         <div class="p-6 self-center flex-grow flex gap-4">
-          <File @import-success="showImportModal = false" />
+          <File @import-success="handleSuccess" />
           <Clipboard
             @import-success="handleSuccess"
             @import-failure="handleFailure"
@@ -39,22 +39,40 @@
       </template>
     </Modal>
   </Teleport>
+  <Message
+    v-for="(message, index) in messages"
+    :key="message"
+    :message="message.message"
+    :type="message.type"
+    @close="removeMessage(index)"
+  />
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import Modal from "@/components/Modal.vue";
-import File from "@/components/Import/File.vue";
-import Clipboard from "@/components/Import/Clipboard.vue";
+import { ref } from 'vue';
+import Modal from '@/components/Modal.vue';
+import File from '@/components/Import/File.vue';
+import Clipboard from '@/components/Import/Clipboard.vue';
 import { set } from '@vueuse/core';
+import { MessageType } from '@/interfaces/NotificationMessage';
+import Message from '@/components/Notification/Message.vue';
 
 const showImportModal = ref(false);
 
-function handleSuccess(warnings: Array<string>): void {
+const messages = ref<Array<{ message: string, type: MessageType }>>([]);
+
+function handleSuccess(warnings: Array<string> = []): void {
+  warnings.forEach((message) => messages.value.push({message: message, type: MessageType.WARNING}));
+  messages.value.push({message: 'Successfully imported activities.', type: MessageType.SUCCESS});
   set(showImportModal, false);
 }
 
 function handleFailure(errors: Array<string>): void {
+  errors.forEach((error) => messages.value.push({message: error, type: MessageType.ERROR}));
   set(showImportModal, false);
+}
+
+function removeMessage(index: number) {
+  messages.value.splice(index, 1);
 }
 </script>

@@ -52,6 +52,10 @@
   <main class="flex flex-col gap-4 py-4">
     <Component :is="tabs[currentTab as keyof Tabs]" />
   </main>
+  <div
+    id="messages"
+    class="fixed bottom-4 right-4 w-96 flex flex-col gap-2"
+  />
 </template>
 
 <script setup lang="ts">
