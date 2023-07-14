@@ -12,12 +12,16 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@vueuse/components": "^10.2.1",
+    "@vueuse/core": "^10.2.1",
     "dracula-ui": "^1.0.6",
+    "lodash": "^4.17.21",
     "pinia": "^2.0.30",
     "vue": "^3.2.13"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",
+    "@types/lodash": "^4.14.195",
     "@types/node": "^18.15.9",
     "@vitejs/plugin-vue": "^4.1.0",
     "@vue/eslint-config-typescript": "^11.0.2",

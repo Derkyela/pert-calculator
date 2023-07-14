@@ -5,7 +5,6 @@ import App from './App.vue';
 import Table from './components/Result/Table.vue';
 import List from './components/Result/List.vue';
 
-const pinia = createPinia();
 const app = createApp(App);
 
 // TODO: Rename component
@@ -13,5 +12,5 @@ const app = createApp(App);
 app.component('Table', Table);
 app.component('List', List);
 
-app.use(pinia);
+app.use(createPinia());
 app.mount('#app');

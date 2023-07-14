@@ -1,6 +1,7 @@
 <template>
   <ul
     v-if="showUnorderedList"
+    ref="html"
     class="drac-list drac-list-unordered my-4"
   >
     <li
@@ -24,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps } from 'vue';
+import { computed, defineExpose, defineProps, ref } from 'vue';
 import { ListType } from '@/interfaces/Settings';
 import type { ActivityInterface } from '@/interfaces/Activity';
 import type { Total } from '@/interfaces/Total';
@@ -37,6 +38,8 @@ const props = defineProps<{
   total: Total,
 }>();
 
+const html = ref(null);
+
 const settingsStore = useSettingsStore();
 
 const settings = computed(() => settingsStore.settings);
@@ -44,6 +47,8 @@ const settings = computed(() => settingsStore.settings);
 const showUnorderedList = computed(() => props.listType === ListType.Unordered);
 
 const showOrderedList = computed(() => props.listType === ListType.Ordered);
+
+defineExpose({html});
 
 function getActivityString(activity: ActivityInterface): string {
   let activityString = props.template;
