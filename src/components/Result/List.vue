@@ -13,6 +13,7 @@
   </ul>
   <ol
     v-if="showOrderedList"
+    ref="html"
     class="drac-list drac-list-ordered my-4"
   >
     <li
