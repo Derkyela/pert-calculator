@@ -7,7 +7,11 @@
     >
       Import from clipboard
     </button>
-    <span class="text-xs drac-text-grey-secondary p-2">Currently only html table is supported.</span>
+    <span
+      class="text-xs drac-text-grey-secondary p-2"
+    >
+      Currently only html table or list is supported.
+    </span>
   </div>
 </template>
 
@@ -21,9 +25,10 @@ import {
   round,
   toPropertyType,
 } from '@/utils';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import _ from 'lodash';
 import { get } from '@vueuse/core';
+import useSettingsStore from '@/stores/settings';
 
 const supportedTypes = ['text/html'];
 
@@ -33,6 +38,10 @@ const emit = defineEmits<{
 }>();
 
 const activitiesStore = useActivitiesStore();
+
+const settingsStore = useSettingsStore();
+
+const settings = computed(() => settingsStore.settings);
 
 const activityTemplate: ActivityInterface = {
   id: 0,
@@ -116,17 +125,63 @@ function tryParseActivitiesFromTable(html: Element): Array<ActivityInterface> {
   return activities;
 }
 
+function tryParseActivitiesFromList(element: Element): Array<ActivityInterface> {
+  const activities: Array<ActivityInterface> = [];
+
+  const propMap = [...settings.value.template.matchAll(/#\w+#/ig)];
+  const regexTemplate = settings.value.template.replaceAll(/#\w+#/ig, '(.*)');
+  const regex = new RegExp(regexTemplate, 'g');
+
+  Array.from(element.children).forEach((activityListItem, itemIndex) => {
+    let activity: ActivityInterface = Object.assign({}, activityTemplate);
+    activity.id = itemIndex + 1;
+
+    const matches = [...(activityListItem as HTMLElement).innerText.matchAll(regex)];
+    propMap.forEach((propMatch, propIndex) => {
+      const prop = propMatch[0].replaceAll('#', '') as keyof ActivityInterface;
+      activity[prop] = toPropertyType(activity[prop], matches[0][propIndex + 1]);
+    });
+
+    if (activity.title === 'Total') {
+      return;
+    }
+
+    if (activity.expectedTime === activityTemplate.expectedTime) {
+      activity.expectedTime = round(calcExpectedTime(activity.optimistic, activity.mostLikely, activity.pessimistic));
+    }
+
+    if (activity.standardDeviationOfTime === activityTemplate.standardDeviationOfTime) {
+      activity.standardDeviationOfTime = round(calcStandardDeviationOfTime(activity.pessimistic, activity.optimistic))
+    }
+
+    if (_.isEqual(activityTemplate, activity)) {
+      addError(`Unable to parse activity from row ${itemIndex}.`);
+      return;
+    }
+
+    activities.push(activity);
+  });
+
+  return activities;
+}
+
 function tryParseActivitiesFromHtml(text: string): Array<ActivityInterface> {
   const template = document.createElement('template');
   template.innerHTML = text;
   const html = template.content.firstChild as Element;
   const table = html.nodeName === 'TABLE' ? html : html.querySelector('table');
+  const unorderedList = html.nodeName === 'UL' ? html : html.querySelector('ul');
+  const orderedList = html.nodeName === 'OL' ? html : html.querySelector('ol');
 
   if (table) {
     return tryParseActivitiesFromTable(table);
+  } else if (unorderedList) {
+    return tryParseActivitiesFromList(unorderedList);
+  } else if (orderedList) {
+    return tryParseActivitiesFromList(orderedList);
   }
 
-  addError('Could not find a table.')
+  addError('Could not find a table or list.')
 
   return [];
 }
