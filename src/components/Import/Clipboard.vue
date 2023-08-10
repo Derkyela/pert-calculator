@@ -106,13 +106,8 @@ function tryParseActivitiesFromTable(html: Element): Array<ActivityInterface> {
       activity[prop] = toPropertyType(activity[prop], (value as HTMLElement).innerText);
     });
 
-    if (activity.expectedTime === activityTemplate.expectedTime) {
-      activity.expectedTime = round(calcExpectedTime(activity.optimistic, activity.mostLikely, activity.pessimistic));
-    }
-
-    if (activity.standardDeviationOfTime === activityTemplate.standardDeviationOfTime) {
-      activity.standardDeviationOfTime = round(calcStandardDeviationOfTime(activity.pessimistic, activity.optimistic))
-    }
+    activity.expectedTime = round(calcExpectedTime(activity.optimistic, activity.mostLikely, activity.pessimistic));
+    activity.standardDeviationOfTime = round(calcStandardDeviationOfTime(activity.pessimistic, activity.optimistic));
 
     if (_.isEqual(activityTemplate, activity)) {
       addError(`Unable to parse activity from row ${rowIndex}.`);
@@ -146,13 +141,8 @@ function tryParseActivitiesFromList(element: Element): Array<ActivityInterface> 
       return;
     }
 
-    if (activity.expectedTime === activityTemplate.expectedTime) {
-      activity.expectedTime = round(calcExpectedTime(activity.optimistic, activity.mostLikely, activity.pessimistic));
-    }
-
-    if (activity.standardDeviationOfTime === activityTemplate.standardDeviationOfTime) {
-      activity.standardDeviationOfTime = round(calcStandardDeviationOfTime(activity.pessimistic, activity.optimistic))
-    }
+    activity.expectedTime = round(calcExpectedTime(activity.optimistic, activity.mostLikely, activity.pessimistic));
+    activity.standardDeviationOfTime = round(calcStandardDeviationOfTime(activity.pessimistic, activity.optimistic));
 
     if (_.isEqual(activityTemplate, activity)) {
       addError(`Unable to parse activity from row ${itemIndex}.`);
