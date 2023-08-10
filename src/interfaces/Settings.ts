@@ -14,6 +14,8 @@ export interface SettingsInterface {
   template: string,
   markHighStandardDeviationOfTime: boolean,
   standardDeviationOfTimeThreshold: number,
+  useFactor: boolean,
+  factor: number,
   storeSettings: boolean,
   storeActivities: boolean,
 }

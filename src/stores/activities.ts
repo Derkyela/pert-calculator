@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import type { ActivityInterface } from '@/interfaces/Activity';
 import type { Total } from '@/interfaces/Total';
-import { round } from '@/utils';
+import {calcFactorizedExpectedTime, round} from '@/utils';
 
 interface State {
   activityId: number
@@ -18,6 +18,7 @@ export default defineStore('activities', {
       mostLikely: 0,
       pessimistic: 0,
       expectedTime: 0,
+      factorizedExpectedTime: 0,
       standardDeviationOfTime: 0,
     }],
   }),
@@ -30,12 +31,14 @@ export default defineStore('activities', {
       let mostLikely = 0;
       let pessimistic = 0;
       let expectedTime = 0;
+      let factorizedExpectedTime = 0;
 
       this.activities.forEach((activity) => {
         optimistic += activity.optimistic;
         mostLikely += activity.mostLikely;
         pessimistic += activity.pessimistic;
         expectedTime += activity.expectedTime;
+        factorizedExpectedTime += activity.factorizedExpectedTime;
       });
 
       return {
@@ -43,6 +46,7 @@ export default defineStore('activities', {
         mostLikely: round(mostLikely),
         pessimistic: round(pessimistic),
         expectedTime: round(expectedTime),
+        factorizedExpectedTime: round(factorizedExpectedTime),
       };
     },
   },
@@ -56,6 +60,7 @@ export default defineStore('activities', {
         mostLikely: 0,
         pessimistic: 0,
         expectedTime: 0,
+        factorizedExpectedTime: 0,
         standardDeviationOfTime: 0,
       });
     },
@@ -66,6 +71,11 @@ export default defineStore('activities', {
 
       const index = this.activities.findIndex((activity) => activity.id === activityId);
       this.activities.splice(index, 1);
+    },
+    recalculateFactorizedExpectedTime(factor: number): void {
+      this.activities.forEach((activity) => {
+        activity.factorizedExpectedTime = round(calcFactorizedExpectedTime(activity.expectedTime, factor));
+      })
     },
   },
 });

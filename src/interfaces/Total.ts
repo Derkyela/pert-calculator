@@ -3,4 +3,5 @@ export interface Total {
   mostLikely: number
   pessimistic: number
   expectedTime: number
+  factorizedExpectedTime: number
 }

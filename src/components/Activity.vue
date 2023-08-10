@@ -85,11 +85,18 @@
     <div class="hidden lg:block py-2 drac-text-white drac-text-semibold drac-text-right">
       {{ expectedTime }}
     </div>
+    <template v-if="settings.useFactor">
+      <div class="hidden lg:block py-2 drac-text-white drac-text-semibold drac-text-right">
+        {{ factorizedExpectedTime }}
+      </div>
+    </template>
     <div
-      class="hidden lg:block col-span-2 py-2 drac-text-right"
+      class="hidden lg:block py-2 drac-text-right"
       :class="[{
         'drac-text-white': !markHighStandardDeviationOfTime,
         'drac-text-red': markHighStandardDeviationOfTime,
+        'col-span-1': settingsStore.settings.useFactor,
+        'col-span-2': !settingsStore.settings.useFactor
       }]"
     >
       {{ standardDeviationOfTime }}
@@ -107,7 +114,7 @@
 
 <script setup lang="ts">
 import useSettingsStore from '@/stores/settings';
-import { round, toNumber, calcExpectedTime, calcStandardDeviationOfTime } from '@/utils';
+import {round, toNumber, calcExpectedTime, calcStandardDeviationOfTime, calcFactorizedExpectedTime} from '@/utils';
 import {
   computed,
   defineEmits,
@@ -115,6 +122,7 @@ import {
   nextTick,
   withDefaults,
 } from 'vue';
+import {get} from "@vueuse/core";
 
 const STEP = 0.5;
 
@@ -125,6 +133,7 @@ interface Props {
   mostLikely?: number,
   pessimistic?: number,
   expectedTime?: number,
+  factorizedExpectedTime?: number,
   standardDeviationOfTime?: number,
   canDelete?: boolean,
 }
@@ -136,6 +145,7 @@ const props = withDefaults(defineProps<Props>(), {
   mostLikely: 0,
   pessimistic: 0,
   expectedTime: 0,
+  factorizedExpectedTime: 0,
   standardDeviationOfTime: 0,
   canDelete: false,
 });
@@ -147,6 +157,7 @@ const emit = defineEmits<{
   (e: 'update:mostLikely', mostLikely: number): void,
   (e: 'update:pessimistic', pessimistic: number): void,
   (e: 'update:expectedTime', expectedTime: number): void,
+  (e: 'update:factorizedExpectedTime', factorizedExpectedTime: number): void,
   (e: 'update:standardDeviationOfTime', standardDeviationOfTime: number): void,
 }>();
 
@@ -164,6 +175,20 @@ function getExpectedTime(): void {
   emit('update:expectedTime', round(expectedTime));
 }
 
+function getFactorizedExpectedTime(): void {
+  if (!get(settings).useFactor) {
+    return;
+  }
+
+  if (props.mostLikely === 0 && props.pessimistic === 0) {
+    return;
+  }
+
+  const expectedTime = calcExpectedTime(props.optimistic, props.mostLikely, props.pessimistic);
+  const factorizedExpectedTime = calcFactorizedExpectedTime(expectedTime, get(settings).factor);
+  emit('update:factorizedExpectedTime', round(factorizedExpectedTime));
+}
+
 function getStandardDeviationOfTime(): void {
   if (props.pessimistic === 0) {
     return;
@@ -176,6 +201,7 @@ function getStandardDeviationOfTime(): void {
 function recalculate(): void {
   nextTick(() => {
     getExpectedTime();
+    getFactorizedExpectedTime();
     getStandardDeviationOfTime();
   });
 }

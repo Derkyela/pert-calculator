@@ -21,6 +21,11 @@
           <th class="pr-4 lg:pr-0">
             Expected Time
           </th>
+          <template v-if="settings.useFactor">
+            <th class="pr-4 lg:pr-0">
+              Factorized Expected Time
+            </th>
+          </template>
           <th class="pr-4 lg:pr-0">
             Standard Deviation of Time
           </th>
@@ -57,6 +62,9 @@
             {{ activity.pessimistic }}
           </td>
           <td>{{ activity.expectedTime }}</td>
+          <template v-if="settings.useFactor">
+            <td>{{ activity.factorizedExpectedTime }}</td>
+          </template>
           <td
             :class="[{
               'drac-text-white': !markHighStandardDeviationOfTime(activity.standardDeviationOfTime),
@@ -87,6 +95,11 @@
           <th class="px-2">
             {{ total.expectedTime }}
           </th>
+          <template v-if="settings.useFactor">
+            <th class="px-2">
+              {{ total.factorizedExpectedTime }}
+            </th>
+          </template>
         </tr>
       </tfoot>
     </table>

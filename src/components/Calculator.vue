@@ -9,7 +9,18 @@
     <div class="text-right">
       Expected Time
     </div>
-    <div class="col-span-2 text-right">
+    <template v-if="settingsStore.settings.useFactor">
+      <div class="text-right">
+        Factorized Expected Time
+      </div>
+    </template>
+    <div
+      class="col-span-2 text-right"
+      :class="{
+        'col-span-1': settingsStore.settings.useFactor,
+        'col-span-2': !settingsStore.settings.useFactor,
+      }"
+    >
       Standard Deviation of Time
     </div>
   </div>
@@ -23,6 +34,7 @@
       v-model:most-likely="activity.mostLikely"
       v-model:pessimistic="activity.pessimistic"
       v-model:expected-time="activity.expectedTime"
+      v-model:factorized-expected-time="activity.factorizedExpectedTime"
       v-model:standard-deviation-of-time="activity.standardDeviationOfTime"
       :activity-id="activity.id"
       :can-delete="canDelete"
@@ -42,6 +54,11 @@
     <div class="drac-text-semibold lg:text-right">
       <span class="lg:hidden">Total expected time: </span>{{ total.expectedTime }}
     </div>
+    <template v-if="settingsStore.settings.useFactor">
+      <div class="drac-text-semibold lg:text-right">
+        <span class="lg:hidden">Factorized total expected time: </span>{{ total.factorizedExpectedTime }}
+      </div>
+    </template>
     <div class="mt-4 lg:mt-0 lg:col-start-11 lg:col-span-2 text-right">
       <button
         type="button"

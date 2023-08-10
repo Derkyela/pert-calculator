@@ -5,5 +5,6 @@ export interface ActivityInterface extends Record<string, any> {
   mostLikely: number,
   pessimistic: number,
   expectedTime: number,
+  factorizedExpectedTime: number,
   standardDeviationOfTime: number,
 }

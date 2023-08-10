@@ -19,7 +19,7 @@
 import type { ActivityInterface } from '@/interfaces/Activity';
 import useActivitiesStore from '@/stores/activities';
 import {
-  calcExpectedTime,
+  calcExpectedTime, calcFactorizedExpectedTime,
   calcStandardDeviationOfTime,
   getHighestActivityId,
   round,
@@ -50,6 +50,7 @@ const activityTemplate: ActivityInterface = {
   mostLikely: 0,
   pessimistic: 0,
   expectedTime: 0,
+  factorizedExpectedTime: 0,
   standardDeviationOfTime: 0,
 };
 
@@ -108,6 +109,7 @@ function tryParseActivitiesFromTable(html: Element): Array<ActivityInterface> {
 
     activity.expectedTime = round(calcExpectedTime(activity.optimistic, activity.mostLikely, activity.pessimistic));
     activity.standardDeviationOfTime = round(calcStandardDeviationOfTime(activity.pessimistic, activity.optimistic));
+    activity.factorizedExpectedTime = round(calcFactorizedExpectedTime(activity.expectedTime, get(settings).factor));
 
     if (_.isEqual(activityTemplate, activity)) {
       addError(`Unable to parse activity from row ${rowIndex}.`);
@@ -143,6 +145,7 @@ function tryParseActivitiesFromList(element: Element): Array<ActivityInterface> 
 
     activity.expectedTime = round(calcExpectedTime(activity.optimistic, activity.mostLikely, activity.pessimistic));
     activity.standardDeviationOfTime = round(calcStandardDeviationOfTime(activity.pessimistic, activity.optimistic));
+    activity.factorizedExpectedTime = round(calcFactorizedExpectedTime(activity.expectedTime, get(settings).factor));
 
     if (_.isEqual(activityTemplate, activity)) {
       addError(`Unable to parse activity from row ${itemIndex}.`);
