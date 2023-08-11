@@ -13,6 +13,8 @@ export default defineStore('settings', {
       template: '#title#: #optimistic# - #mostLikely# - #pessimistic# -> #expectedTime#',
       markHighStandardDeviationOfTime: false,
       standardDeviationOfTimeThreshold: 1,
+      useFactor: false,
+      factor: 1,
       storeSettings: false,
       storeActivities: false,
     },

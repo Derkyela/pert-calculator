@@ -55,3 +55,7 @@ export function calcExpectedTime(optimistic: number, mostLikely: number, pessimi
 export function calcStandardDeviationOfTime(pessimistic: number, optimistic: number): number {
   return (pessimistic - optimistic) / 6;
 }
+
+export function calcFactorizedExpectedTime(expectedTime: number, factor: number): number {
+  return expectedTime * factor;
+}

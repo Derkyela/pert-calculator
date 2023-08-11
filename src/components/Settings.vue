@@ -74,7 +74,7 @@
       </div>
       <div class="drac-text drac-text-grey my-1.5">
         Available template variable: #title#, #optimistic#, #mostLikely#, #pessimistic#,
-        #expectedTime#, #standardDeviationOfTime#
+        #expectedTime#, <span v-if="settings.useFactor">#factorizedExpectedTime#,</span> #standardDeviationOfTime#
       </div>
     </div>
     <div class="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
@@ -101,6 +101,40 @@
           :value="settings.standardDeviationOfTimeThreshold"
           class="drac-input drac-input-white drac-text-white"
           @input="settings.standardDeviationOfTimeThreshold
+            = convertToNumber(($event.target as HTMLInputElement).value)"
+          @focus="($event.target as HTMLInputElement).select()"
+        >
+      </div>
+    </div>
+    <div>
+      <div class="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
+        <label for="markHighStandardDeviationOfTime">Add factor</label>
+        <input
+          id="markHighStandardDeviationOfTime"
+          v-model="settings.useFactor"
+          type="checkbox"
+          class="drac-switch drac-checkbox"
+          :class="[{
+            'drac-switch-green': settings.useFactor,
+            'drac-switch-red': !settings.useFactor,
+          }]"
+        >
+      </div>
+      <div class="drac-text drac-text-grey my-1.5">
+        The factor will be applied to the expected time and might represent time for testing or project management.<br>Example: If the expected time is 12 and each task should include add 30% for testing purposes you may add the factor 1.3 in order to add this 30% testing. Resulting in 15.6.
+      </div>
+    </div>
+    <div
+      v-if="settings.useFactor"
+      class="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4"
+    >
+      <label for="standardDeviationOfTimeThreshold">Factor</label>
+      <div class="lg:w-28">
+        <input
+          id="standardDeviationOfTimeThreshold"
+          :value="settings.factor"
+          class="drac-input drac-input-white drac-text-white"
+          @input="settings.factor
             = convertToNumber(($event.target as HTMLInputElement).value)"
           @focus="($event.target as HTMLInputElement).select()"
         >
@@ -147,11 +181,11 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits, computed, onMounted } from 'vue';
+import {computed, defineEmits, onMounted} from 'vue';
 import useActivitiesStore from '@/stores/activities';
 import useSettingsStore from '@/stores/settings';
-import { ListType, ResultType, type SettingsInterface } from '@/interfaces/Settings';
-import { toNumber } from '@/utils';
+import {ListType, ResultType, type SettingsInterface} from '@/interfaces/Settings';
+import {toNumber} from '@/utils';
 
 defineEmits<{
   (e: 'set:standardDeviationOfTimeThreshold', standardDeviationOfTimeThreshold: number): void,
@@ -179,6 +213,10 @@ onMounted(() => {
       localStorage.setItem('activities', JSON.stringify(activitiesStore.activities));
     } else {
       localStorage.removeItem('activities');
+    }
+
+    if (state.settings.useFactor) {
+      activitiesStore.recalculateFactorizedExpectedTime(state.settings.factor);
     }
   });
 });
