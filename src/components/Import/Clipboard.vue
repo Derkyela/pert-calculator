@@ -19,7 +19,8 @@
 import type { ActivityInterface } from '@/interfaces/Activity';
 import useActivitiesStore from '@/stores/activities';
 import {
-  calcExpectedTime, calcFactorizedExpectedTime,
+  calcExpectedTime,
+  calcFactorizedExpectedTime,
   calcStandardDeviationOfTime,
   getHighestActivityId,
   round,
