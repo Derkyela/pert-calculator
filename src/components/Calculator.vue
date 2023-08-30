@@ -39,6 +39,7 @@
       :activity-id="activity.id"
       :can-delete="canDelete"
       @remove-activity="removeActivity"
+      @keyup.enter="add()"
     />
   </template>
   <div class="flex flex-col lg:grid lg:grid-cols-12 lg:gap-4">
@@ -75,7 +76,7 @@
 import useActivitiesStore from '@/stores/activities';
 import useSettingsStore from '@/stores/settings';
 import Activity from '@/components/Activity.vue';
-import { computed, onMounted } from 'vue';
+import { computed, nextTick, onMounted } from 'vue';
 
 const activitiesStore = useActivitiesStore();
 const settingsStore = useSettingsStore();
@@ -86,6 +87,14 @@ const total = computed(() => activitiesStore.total);
 
 function add(): void {
   activitiesStore.add();
+  nextTick(() => focusLastActivityTitle());
+}
+
+function focusLastActivityTitle(): void {
+  const element = document.getElementById(`title_${activitiesStore.activityId}`)
+  if (element) {
+    element.focus();
+  }
 }
 
 function removeActivity(activityId: number): void {
