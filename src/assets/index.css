@@ -1,7 +1,19 @@
-@import 'tailwindcss/base';
+@import 'dracula-ui/styles/dracula-ui.css' layer(components);
 
-@import 'dracula-ui/styles/dracula-ui.css';
+@tailwind base;
 
-@import 'tailwindcss/components';
+@tailwind components;
 
-@import 'tailwindcss/utilities';
+@tailwind utilities;
+
+@layer utilities {
+    .sortable-ghost {
+        @apply opacity-50;
+    }
+    .sortable-chosen {
+        @apply !border-2 drac-border-green;
+    }
+    .sortable-drag {
+        @apply drac-bg-black border-none !rounded-none;
+    }
+}

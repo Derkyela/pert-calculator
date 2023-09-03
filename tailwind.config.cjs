@@ -8,4 +8,9 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  safelist: [
+    'sortable-ghost',
+    'sortable-chosen',
+    'sortable-drag',
+  ],
 }

@@ -14,7 +14,7 @@
       >
     </a>
   </div>
-  <nav class="overflow-x-auto flex justify-between">
+  <nav class="overflow-x-auto flex justify-between flex-wrap gap-4">
     <ul class="drac-tabs drac-tabs-white">
       <li
         v-for="(_, tab) in tabs"
@@ -30,7 +30,7 @@
         >{{ tab }}</a>
       </li>
     </ul>
-    <div class="flex gap-4">
+    <div class="flex gap-4 flex-wrap">
       <Import />
       <a
         :href="getActivitiesExportString()"
