@@ -17,7 +17,8 @@
     "dracula-ui": "^1.0.6",
     "lodash": "^4.17.21",
     "pinia": "^2.0.30",
-    "vue": "^3.2.13"
+    "vue": "^3.2.13",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",

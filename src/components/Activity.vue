@@ -3,7 +3,23 @@
     class="flex flex-col border rounded-lg drac-border-grey p-2
               lg:border-0 lg:p-0 lg:grid lg:grid-cols-12 gap-4"
   >
-    <div class="col-span-5 ">
+    <div class="col-span-5 flex flex-col items-start gap-4 lg:flex-row lg:items-center">
+      <div class="drag w-6 h-6 cursor-move">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+          />
+        </svg>
+      </div>
       <label
         :for="`title_${activityId}`"
         class="lg:hidden"
