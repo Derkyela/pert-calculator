@@ -108,7 +108,7 @@
     </div>
     <div>
       <div class="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
-        <label for="markHighStandardDeviationOfTime">Add factor</label>
+        <label for="markHighStandardDeviationOfTime">Add Factor</label>
         <input
           id="markHighStandardDeviationOfTime"
           v-model="settings.useFactor"
@@ -177,15 +177,56 @@
         disable the feature again.
       </div>
     </div>
+    <div v-if="!_.isEqual(settingsStore.defaultSettings, settings)">
+      <p class="mb-2">
+        You can share this settings by copying the link via the button below.
+      </p>
+      <div class="relative inline-flex flex-col gap-2">
+        <CopyNotification>
+          <div
+            v-if="showFeedback && copySuccess === true"
+            class="inline-block drac-bg-black border drac-border-green drac-rounded-lg p-2"
+          >
+            <span class="text-xs drac-text drac-line-height drac-text-white">Copied</span>
+          </div>
+        </CopyNotification>
+        <CopyNotification>
+          <div
+            v-if="showFeedback && copySuccess === false"
+            class="inline-block drac-bg-black border drac-border-red drac-rounded-lg p-2"
+          >
+            <span class="text-xs drac-text drac-line-height drac-text-red">Something went wrong copying.</span>
+          </div>
+        </CopyNotification>
+        <button
+          type="button"
+          class="drac-btn drac-border-green drac-btn-outline drac-text-green"
+          @click="copyShareUrl"
+          @blur="copySuccess = null; showFeedback = false;"
+        >
+          Copy Share Link
+        </button>
+      </div>
+    </div>
+    <div v-if="doNotImportSettings">
+      You have disabled to import settings via url. Click <a
+        class="drac-anchor drac-text drac-text-white drac-text-green--hover underline"
+        href="#"
+        @click.prevent="enableImportingSettings"
+      >here</a> to enable it again.
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {computed, defineEmits, onMounted} from 'vue';
+import { computed, defineEmits, onMounted, ref } from 'vue';
 import useActivitiesStore from '@/stores/activities';
 import useSettingsStore from '@/stores/settings';
 import {ListType, ResultType, type SettingsInterface} from '@/interfaces/Settings';
 import {toNumber} from '@/utils';
+import CopyNotification from '@/components/Notification/CopyTransition.vue';
+import { Buffer } from 'buffer';
+import _ from 'lodash';
 
 defineEmits<{
   (e: 'set:standardDeviationOfTimeThreshold', standardDeviationOfTimeThreshold: number): void,
@@ -200,6 +241,12 @@ const settings = computed<SettingsInterface>(() => settingsStore.settings);
 const resultTypeOptions = Object.values(ResultType);
 
 const listTypeOptions = Object.values(ListType);
+
+const showFeedback = ref(false);
+
+const copySuccess = ref<boolean | null>(null);
+
+const doNotImportSettings = ref(localStorage.getItem('doNotImportSettings') === 'true');
 
 onMounted(() => {
   settingsStore.$subscribe((mutation, state) => {
@@ -227,5 +274,26 @@ function resultTypeIsList(): boolean {
 
 function convertToNumber(val: string): number {
   return toNumber(val);
+}
+
+function copyShareUrl() {
+  showFeedback.value = true;
+
+  const url = new URL(window.location.href);
+  const settingsString = Buffer.from(JSON.stringify(settings.value)).toString('base64');
+  url.searchParams.set('settings', settingsString);
+
+  try {
+    navigator.clipboard.writeText(url.href);
+    copySuccess.value = true;
+  } catch (e) {
+    copySuccess.value = false;
+    console.error(e);
+  }
+}
+
+function enableImportingSettings() {
+  doNotImportSettings.value = false;
+  localStorage.setItem('doNotImportSettings', 'false');
 }
 </script>

@@ -5,18 +5,24 @@ interface State {
   settings: SettingsInterface
 }
 
+const defaultSettings: SettingsInterface = {
+  resultType: ResultType.List,
+  listType: ListType.Unordered,
+  template: '#title#: #optimistic# - #mostLikely# - #pessimistic# -> #expectedTime#',
+  markHighStandardDeviationOfTime: false,
+  standardDeviationOfTimeThreshold: 1,
+  useFactor: false,
+  factor: 1,
+  storeSettings: false,
+  storeActivities: false,
+};
 export default defineStore('settings', {
   state: (): State => ({
-    settings: {
-      resultType: ResultType.List,
-      listType: ListType.Unordered,
-      template: '#title#: #optimistic# - #mostLikely# - #pessimistic# -> #expectedTime#',
-      markHighStandardDeviationOfTime: false,
-      standardDeviationOfTimeThreshold: 1,
-      useFactor: false,
-      factor: 1,
-      storeSettings: false,
-      storeActivities: false,
-    },
+    settings: {...defaultSettings},
   }),
+  getters: {
+    defaultSettings: () => {
+      return {...defaultSettings};
+    },
+  },
 });
